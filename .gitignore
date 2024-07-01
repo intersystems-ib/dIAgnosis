@@ -41,4 +41,4 @@ encoder-ui/typings
 encoder-ui/.DS_Store
 encoder-ui/Thumbs.db
 shared/in/cie10.csv
-shared/module
+shared/model
