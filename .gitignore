@@ -1,4 +1,5 @@
 shared/durable
+shared/model
 settings.json
 # Compiled output
 encoder-ui/dist
@@ -41,4 +42,3 @@ encoder-ui/typings
 encoder-ui/.DS_Store
 encoder-ui/Thumbs.db
 shared/in/cie10.csv
-shared/model
