@@ -1,0 +1,44 @@
+shared/durable
+settings.json
+# Compiled output
+encoder-ui/dist
+encoder-ui/tmp
+encoder-ui/out-tsc
+encoder-ui/bazel-out
+
+# Node
+encoder-ui/node_modules
+encoder-uinpm-debug.log
+encoder-uiyarn-error.log
+
+# IDEs and editors
+encoder-ui/.idea/
+encoder-ui/.project
+encoder-ui/.classpath
+encoder-ui/.c9/
+encoder-ui/*.launch
+encoder-ui/.settings/
+encoder-ui/*.sublime-workspace
+
+# Visual Studio Code
+encoder-ui/.vscode/*
+encoder-ui/!.vscode/settings.json
+encoder-ui/!.vscode/tasks.json
+encoder-ui/!.vscode/launch.json
+encoder-ui/!.vscode/extensions.json
+encoder-ui/.history/*
+
+# Miscellaneous
+encoder-ui/.angular/cache
+encoder-ui/.sass-cache/
+encoder-ui/connect.lock
+encoder-ui/coverage
+encoder-ui/libpeerconnection.log
+encoder-ui/testem.log
+encoder-ui/typings
+
+# System files
+encoder-ui/.DS_Store
+encoder-ui/Thumbs.db
+shared/in/cie10.csv
+shared/module

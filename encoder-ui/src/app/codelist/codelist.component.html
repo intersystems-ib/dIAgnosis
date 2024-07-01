@@ -1,0 +1,53 @@
+@if (loading) {
+<div class="d-flex justify-content-center">
+	<div class="spinner-border" role="status">
+	</div>
+</div>
+}
+@if (!loading) {
+<table class="table table-striped table-hover">
+	<thead>
+		<tr>
+			<th scope="col">#</th>
+			<th scope="col">Código CIE-10</th>
+			<th scope="col">Descripción</th>
+			<th scope="col">Similitud</th>
+		</tr>
+	</thead>
+	<tbody>
+		@for (option of codeOptions; track option; let i = $index) {
+			<tr (click)="saveCodification(option.CodeId);">
+				<th scope="row">{{ i + 1 }}</th>
+				<td>					
+					{{ option.CodeId }}
+				</td>
+				<td>					
+					{{ option.Description }}
+				</td>
+				<td [ngClass]="{'similarity-veryhigh': option.Similarity >= .8 ,
+					'similarity-high': option.Similarity < .8 && option.Similarity >= .7,
+					'similarity-medium': option.Similarity < .7 && option.Similarity >= .6,
+					'similarity-low': option.Similarity < .6 }">
+					{{ option.Similarity }}
+				</td>
+			</tr>
+		}
+	</tbody>
+</table>
+
+<div class="d-flex justify-content-between p-2">
+	<ngb-pagination
+		[collectionSize]="collectionSize"
+		[(page)]="page"
+		[pageSize]="pageSize"
+		(pageChange)="refreshOptions()"
+	>
+	</ngb-pagination>
+
+	<select class="form-select" style="width: auto" [(ngModel)]="pageSize" (ngModelChange)="refreshOptions()">
+		<option [ngValue]="6">6 códigos por página</option>
+		<option [ngValue]="8">8 códigos por página</option>
+		<option [ngValue]="10" selected>10 códigos por página</option>
+	</select>
+</div>
+}

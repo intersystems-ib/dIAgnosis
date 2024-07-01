@@ -1,0 +1,73 @@
+@if (loading) {
+	<div class="d-flex justify-content-center">
+		<div class="spinner-border" role="status">
+		</div>
+	</div>
+}
+@if (!loading) {
+<table class="table table-striped">
+	<thead>
+		<tr>
+			<th scope="col">#</th>
+			<th scope="col">ID de mensaje</th>
+			<th scope="col">Diagnóstico</th>
+			<th scope="col">Código CIE-10</th>
+			<th scope="col">Descripción CIE-10</th>
+			<th scope="col">Acción</th>
+		</tr>
+	</thead>
+	<tbody>
+		@for (request of codeRequests; track request; let i = $index) {
+			<tr>
+				<th scope="row">{{ i + 1 }}</th>
+				<td>					
+					<a href="http://localhost:52774/csp/healthshare/encoder/EnsPortal.MessageContents.zen?HeaderClass=Ens.MessageHeader&HeaderId={{ request.MessageId }}" target="_blank">{{ request.MessageId }}</a>
+				</td>
+				<td>					
+					{{ request.Description }}
+				</td>
+				<td>
+					{{ request.CodeId }}
+				</td>
+				<td>
+					{{request.CodeDescription}}
+				</td>
+				<td>
+					<button type="button" class="btn btn-success" (click)="open(content, request.Id, request.Description)">
+						<span>Buscar CIE-10</span>
+					</button>
+					<button type="button" class="btn btn-primary" style="margin-left: 6px;" (click)="sendNotification(request.Id)">
+						<span>Notificar</span>
+					</button>
+				</td>
+			</tr>
+		}
+	</tbody>
+</table>
+<div class="d-flex justify-content-between p-2">
+	<ngb-pagination
+		[collectionSize]="collectionSize"
+		[(page)]="page"
+		[pageSize]="pageSize"
+		(pageChange)="refreshRequests()"
+	>
+	</ngb-pagination>
+
+	<select class="form-select" style="width: auto" [(ngModel)]="pageSize" (ngModelChange)="refreshRequests()">
+		<option [ngValue]="10" selected>10 códigos por página</option>
+		<option [ngValue]="15">15 códigos por página</option>
+		<option [ngValue]="20">20 códigos por página</option>
+	</select>
+</div>
+<ng-template #content let-modal>
+	<div class="modal-header">
+		<h4 class="modal-title" id="modal-basic-title">Similitudes encontradas para: {{codeRequestDescription}}</h4>
+		<button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+	</div>
+	<div class="modal-body">
+		<app-codelist [codeRequestId]="codeRequestId" (newCodeEvent)="loadRequests(); modal.close('Code saved')"></app-codelist>
+	</div>
+	<div class="modal-footer">
+	</div>
+</ng-template>
+}

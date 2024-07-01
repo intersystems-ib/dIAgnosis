@@ -1,0 +1,189 @@
+Class ENCODER.WS.Service Extends %CSP.REST
+{
+
+Parameter HandleCorsRequest = 0;
+
+Parameter CHARSET = "utf-8";
+
+XData UrlMap [ XMLNamespace = "https://www.intersystems.com/urlmap" ]
+{
+<Routes>
+    <Route Url="/getCodeOptions/:idRequest" Method="GET" Call="GetCodeOptions" />
+    <Route Url="/getCodeRequests" Method="GET" Call="GetCodeRequests" />
+    <Route Url="/saveCodification" Method="POST" Call="SaveCodification" />
+    <Route Url="/sendNotification" Method="POST" Call="SendNotification" />
+    <Route Url="/analyzeText" Method="POST" Call="AnalyzeText" />
+    <Route Url="/getModel" Method="GET" Call="GetModel" />
+</Routes>
+}
+
+ClassMethod OnHandleCorsRequest(url As %String) As %Status
+{
+	set url = %request.GetCgiEnv("HTTP_REFERER")
+    set origin = $p(url,"/",1,3) // origin = "http(s)://origin.com:port"
+
+    // here you can check specific origins
+    // otherway, it will allow all origins (useful while developing only)
+
+	do %response.SetHeader("Access-Control-Allow-Credentials","true")
+	do %response.SetHeader("Access-Control-Allow-Methods","GET,POST,PUT,DELETE,OPTIONS")
+	do %response.SetHeader("Access-Control-Allow-Origin",origin)
+	do %response.SetHeader("Access-Control-Allow-Headers","Access-Control-Allow-Origin, Origin, X-Requested-With, Content-Type, Accept, Authorization, Cache-Control")
+	quit $$$OK
+}
+
+ClassMethod GetCodeOptions(idRequest As %String) As %Status
+{
+	set ret = $$$OK
+    try {
+        set codeRequest = ##class(ENCODER.Object.CodeRequests).%OpenId(idRequest)
+		set vectorDescription = ##class(ENCODER.Utils.Manager).GetEncoding(codeRequest.Description)
+		//set description = $get(%request.Data("description",1))
+
+        set sql = 
+            "SELECT TOP 50 * FROM (SELECT CodeId, Description, VECTOR_DOT_PRODUCT(VectorDescription, TO_VECTOR(?, DECIMAL)) AS Similarity FROM ENCODER_Object.Codes) WHERE Similarity > 0.4 ORDER BY Similarity DESC"
+
+		set statement = ##class(%SQL.Statement).%New()
+		$$$ThrowOnError(statement.%Prepare(sql))
+        set rs = statement.%Execute(vectorDescription)
+
+        set array = []
+        while rs.%Next() {
+            do array.%Push({
+                    "CodeId": (rs.%Get("CodeId")),
+                    "Description": (rs.%Get("Description")),
+                    "Similarity": (rs.%Get("Similarity"))
+                })
+        }
+        set %response.Status = ..#HTTP200OK
+        write array.%ToJSON()
+
+    } catch ex {
+        set %response.Status = ..#HTTP400BADREQUEST
+        return ex.DisplayString()
+    }
+    quit ret
+}
+
+ClassMethod GetCodeRequests() As %Status
+{
+	set ret = $$$OK
+    try {
+        //set description = $get(%request.Data("description",1))
+
+        set sql = 
+            "SELECT %ID, MessageId, Description, Code->CodeId As CodeId, Code->Description As CodeDescription FROM ENCODER_Object.CodeRequests "_            
+            "ORDER BY MessageId ASC"
+
+		set statement = ##class(%SQL.Statement).%New()
+		$$$ThrowOnError(statement.%Prepare(sql))
+        set rs = statement.%Execute()
+
+        set array = []
+        while rs.%Next() {
+            do array.%Push({
+                    "Id": (rs.%Get("ID")),
+                    "MessageId": (rs.%Get("MessageId")),
+                    "Description": (rs.%Get("Description")),
+                    "CodeId": (rs.%Get("CodeId")),
+                    "CodeDescription": (rs.%Get("CodeDescription"))
+                })
+        }
+        set %response.Status = ..#HTTP200OK
+        write array.%ToJSON()
+
+    } catch ex {
+        set %response.Status = ..#HTTP400BADREQUEST
+        return ex.DisplayString()
+    }
+    quit ret
+}
+
+ClassMethod SaveCodification() As %Status
+{
+	set ret = $$$OK
+    try {
+        set dynamicBody = {}.%FromJSON(%request.Content)
+        set sql = "UPDATE ENCODER_Object.CodeRequests SET Code = (SELECT ID FROM ENCODER_Object.Codes WHERE CodeId = ?) WHERE ID = ?"
+        
+        set statement = ##class(%SQL.Statement).%New()
+		$$$ThrowOnError(statement.%Prepare(sql))
+        set rs = statement.execute(dynamicBody.%Get("Code"), dynamicBody.%Get("CodeRequestId"))
+
+        set %response.Status = ..#HTTP200OK
+
+    } catch ex {
+        set %response.Status = ..#HTTP400BADREQUEST
+        return ex.DisplayString()
+    }
+    quit ret
+}
+
+ClassMethod SendNotification() As %Status
+{
+	set ret = $$$OK
+    try {
+        set dynamicBody = {}.%FromJSON(%request.Content)
+        set notificationRequest = ##class(ENCODER.Message.NotifyRequest).%New()
+        set notificationRequest.CodeRequestId = dynamicBody.%Get("CodeRequestId")
+        
+        // Creation of BS instance
+        set status = ##class(Ens.Director).CreateBusinessService("ENCODER.BS.CodeImportService", .instance)
+        set tSC = instance.SendRequestSync("ENCODER.BP.CreateHL7Message", notificationRequest, .response)
+
+        set %response.Status = ..#HTTP200OK
+
+    } catch ex {
+        set %response.Status = ..#HTTP400BADREQUEST
+        return ex.DisplayString()
+    }
+    quit ret
+}
+
+ClassMethod GetModel() As %Status
+{
+	set ret = $$$OK
+    try {
+
+        set response = ..DownloadModel()
+        
+        set %response.Status = ..#HTTP200OK
+
+    } catch ex {
+        set %response.Status = ..#HTTP400BADREQUEST
+        return ex.DisplayString()
+    }
+    quit ret
+}
+
+ClassMethod AnalyzeText() As %Status
+{
+	set ret = $$$OK
+    try {
+        set dynamicBody = {}.%FromJSON(%request.Content)
+        set notificationRequest = ##class(ENCODER.Message.NotifyRequest).%New()
+        set notificationRequest.CodeRequestId = dynamicBody.%Get("CodeRequestId")
+        
+        // Creation of BS instance
+        set status = ##class(Ens.Director).CreateBusinessService("ENCODER.BS.CodeImportService", .instance)
+        set tSC = instance.SendRequestSync("ENCODER.BP.CreateHL7Message", notificationRequest, .response)
+
+        set %response.Status = ..#HTTP200OK
+
+    } catch ex {
+        set %response.Status = ..#HTTP400BADREQUEST
+        return ex.DisplayString()
+    }
+    quit ret
+}
+
+ClassMethod DownloadModel() As %String [ Language = python ]
+{
+    import sentence_transformers
+
+    model = sentence_transformers.SentenceTransformer('sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2')
+    model.save('/shared/model/')
+    return "Downloaded"
+}
+
+}
