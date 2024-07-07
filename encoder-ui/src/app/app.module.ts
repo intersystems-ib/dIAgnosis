@@ -7,7 +7,7 @@ import { NgbModule, NgbPaginationModule, NgbTypeaheadModule } from '@ng-bootstra
 import { DiagnosisComponent } from './diagnosis/diagnosis.component';
 import { HttpClientModule } from '@angular/common/http';
 import { CodelistComponent } from './codelist/codelist.component';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [

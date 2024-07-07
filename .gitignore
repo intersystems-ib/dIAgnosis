@@ -1,5 +1,6 @@
 shared/durable
-shared/model
+shared/model/*
+!shared/model/.gitkeep
 settings.json
 # Compiled output
 encoder-ui/dist

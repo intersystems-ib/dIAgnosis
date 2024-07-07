@@ -1,7 +1,7 @@
 Class ENCODER.Message.GenericResponse Extends Ens.Response
 {
 
-Property Result As %String;
+Property Result As %String(MAXLEN = 5000);
 
 Storage Default
 {

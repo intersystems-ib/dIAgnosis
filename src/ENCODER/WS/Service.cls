@@ -5,6 +5,8 @@ Parameter HandleCorsRequest = 0;
 
 Parameter CHARSET = "utf-8";
 
+Parameter CONVERTINPUTSTREAM = 1;
+
 XData UrlMap [ XMLNamespace = "https://www.intersystems.com/urlmap" ]
 {
 <Routes>
@@ -13,7 +15,6 @@ XData UrlMap [ XMLNamespace = "https://www.intersystems.com/urlmap" ]
     <Route Url="/saveCodification" Method="POST" Call="SaveCodification" />
     <Route Url="/sendNotification" Method="POST" Call="SendNotification" />
     <Route Url="/analyzeText" Method="POST" Call="AnalyzeText" />
-    <Route Url="/getModel" Method="GET" Call="GetModel" />
 </Routes>
 }
 
@@ -140,34 +141,35 @@ ClassMethod SendNotification() As %Status
     quit ret
 }
 
-ClassMethod GetModel() As %Status
-{
-	set ret = $$$OK
-    try {
-
-        set response = ..DownloadModel()
-        
-        set %response.Status = ..#HTTP200OK
-
-    } catch ex {
-        set %response.Status = ..#HTTP400BADREQUEST
-        return ex.DisplayString()
-    }
-    quit ret
-}
-
 ClassMethod AnalyzeText() As %Status
 {
 	set ret = $$$OK
     try {
         set dynamicBody = {}.%FromJSON(%request.Content)
-        set notificationRequest = ##class(ENCODER.Message.NotifyRequest).%New()
-        set notificationRequest.CodeRequestId = dynamicBody.%Get("CodeRequestId")
+        set analysisRequest = ##class(ENCODER.Message.AnalysisRequest).%New()
+        set analysisRequest.TextToAnalyze = dynamicBody.%Get("Text")
         
         // Creation of BS instance
-        set status = ##class(Ens.Director).CreateBusinessService("ENCODER.BS.CodeImportService", .instance)
-        set tSC = instance.SendRequestSync("ENCODER.BP.CreateHL7Message", notificationRequest, .response)
+        set status = ##class(Ens.Director).CreateBusinessService("ENCODER.BS.AnalyzeTextService", .instance)
+        set tSC = instance.SendRequestSync("ENCODER.BP.AnalyzeTextProcess", analysisRequest, .response)
 
+        set sql = 
+            "SELECT CodeId, RawText, Description, max(Similarity) as Similarity FROM ENCODER_Object.TextMatches WHERE AnalysisId = ? GROUP BY CodeId"
+
+		set statement = ##class(%SQL.Statement).%New()
+		$$$ThrowOnError(statement.%Prepare(sql))
+        set rs = statement.%Execute(response.AnalysisRequestId)
+
+        set array = []
+        while rs.%Next() {
+            do array.%Push({
+                    "CodeId": (rs.%Get("CodeId")),
+                    "RawText": (rs.%Get("RawText")),
+                    "Description": (rs.%Get("Description")),
+                    "Similarity": (rs.%Get("Similarity"))
+                })
+        }
+        write array.%ToJSON()
         set %response.Status = ..#HTTP200OK
 
     } catch ex {
@@ -175,15 +177,6 @@ ClassMethod AnalyzeText() As %Status
         return ex.DisplayString()
     }
     quit ret
-}
-
-ClassMethod DownloadModel() As %String [ Language = python ]
-{
-    import sentence_transformers
-
-    model = sentence_transformers.SentenceTransformer('sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2')
-    model.save('/shared/model/')
-    return "Downloaded"
 }
 
 }

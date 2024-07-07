@@ -13,11 +13,17 @@ Method OnRequest(pInput As ENCODER.Message.GenericRequest, Output pOutput As ENC
 Method ParseCIE10(filePath As %String, codeType As %String) As %String [ Language = python ]
 {
     import csv
+    import os
     import iris
     import pandas as pd
     import sentence_transformers
 
     try :
+        if not os.path.isdir('/shared/model/'):
+            model = sentence_transformers.SentenceTransformer('jaimevera1107/all-MiniLM-L6-v2-similarity-es')
+            # model = sentence_transformers.SentenceTransformer('sentence-transformers/paraphrase-multilingual-mpnet-base-v2')
+            model.save('/shared/model/')
+        
         stmt = iris.sql.prepare("TRUNCATE TABLE ENCODER_Object.Codes")
         rs = stmt.execute()
 

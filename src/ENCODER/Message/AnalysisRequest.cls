@@ -1,7 +1,7 @@
 Class ENCODER.Message.AnalysisRequest Extends Ens.Request
 {
 
-Property TextToAnalyze As %String;
+Property TextToAnalyze As %String(MAXLEN = 50000);
 
 Storage Default
 {

@@ -25,4 +25,26 @@ ClassMethod GetEncoding(sentence As %String) As %String [ Language = python ]
         return str(embeddings)
 }
 
+ClassMethod DownloadModel() As %String [ Language = python ]
+{
+    import sentence_transformers
+
+    model = sentence_transformers.SentenceTransformer('sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2')
+    model.save('/shared/model/')
+    return "Downloaded"
+}
+
+ClassMethod LematizeText(textToLematize As %String) As %String [ Language = python ]
+{
+    import spacy
+
+    nlp = spacy.load('es_core_news_sm')
+
+    doc = nlp(textToLematize)
+    words = [t.orth_ for t in doc if not t.is_punct | t.is_stop]
+    lexical_tokens = [t.lower() for t in words if t.isalpha()]
+    
+    return " ".join(lexical_tokens)
+}
+
 }

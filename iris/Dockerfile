@@ -17,6 +17,8 @@ RUN chmod +x /webapp.xml
 
 RUN pip3 install -r /requirements.txt --break-system-packages
 
+RUN spacy download es_core_news_sm --break-system-packages
+
 USER irisowner
 
 # copy files to image
@@ -38,4 +40,4 @@ RUN \
   set ^Ens.Configuration("csp","LastProduction") = production \
   do ##class(Ens.Director).SetAutoStart(production) \
   zn "%SYS" \
-  do ##class(Security.Applications).Import("/webapp.xml",.n) \
+  do ##class(Security.Applications).Import("/webapp.xml",.n)
