@@ -1,23 +1,77 @@
-<div class="w-100">
+<div class="w-100 h-100 overflow-hidden">
     <div class="row">
-        <div class="col-6">
+        <div class="col">
             <form class="p-4" (ngSubmit)="onSubmit()" [formGroup]="textForm">
                 <div class="form-group">
-                    <label for="textToAnalyze">Texto a analizar:</label>
+                    <label for="textToAnalyze" class="font-weight-bold">Texto a analizar:</label>
                     <textarea class="form-control" formControlName="TextToAnalyze" rows="8"></textarea>
                 </div>
-                <div class="form-group pt-2">
+                <div class="form-group pt-4 text-center">
                     <button type="submit" class="btn btn-primary">
                         <span class="margin-label">Analizar texto</span>  
                     </button>
                 </div>
             </form>
         </div>
+    </div>
+    <div class="row h-50">        
         <div class="col-6">
-            <div class="p-4">
-                <label for="textToAnalyze">Resultado:</label><br/>
-                <div class="h-100 w-100 border">
+            <div class="p-4 h-100">
+                <label class="font-weight-bold">Hallazgos:</label>
+                @if (loading && !error) {
+                <div class="h-100 w-100 text-section border d-flex align-items-center justify-content-center">
+                    <ngb-progressbar class="m-3 w-100" [showValue]="true" type="success" [value]="totalReceived" />
+                </div>    
+                }
+                @if (!loading && !error) {
+                <div class="h-100 w-100 border text-section">
                     <span class="h-100" [innerHTML]="textUpdated"></span>
+                </div>
+                }
+                @if (error) {
+                <div class="h-100 w-100 border d-flex align-items-center justify-content-center">
+                    <ngb-progressbar class="m-3 w-100" [showValue]="true" type="danger" [value]="100">Error, please, try again!</ngb-progressbar>
+                </div>    
+                }
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="p-4 h-100">
+                <label class="font-weight-bold">Posibles diagnósticos:</label>
+                <div class="h-100 w-100 border text-section">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th scope="col">Texto</th>
+                                <th scope="col">Código</th>
+                                <th scope="col">Descripción</th>
+                                <th scope="col">Similitud</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                    @if (!loading && !error) {                        
+                        @for (textAndDiagnostic of textAndDiagnosticList; track $index) {                                                    
+                            @for (diagnostic of textAndDiagnostic.diagnostics; track diagnostic; let i = $index) {
+                                <tr>
+                                    <td>{{textAndDiagnostic.rawText}}</td>
+                                    <td>					
+                                        {{ diagnostic.code }}
+                                    </td>
+                                    <td>					
+                                        {{ diagnostic.description }}
+                                    </td>
+                                    <td [ngClass]="{'similarity-veryhigh': diagnostic.similarity >= .8 ,
+                                        'similarity-high': diagnostic.similarity < .8 && diagnostic.similarity >= .7,
+                                        'similarity-medium': diagnostic.similarity < .7 && diagnostic.similarity >= .6,
+                                        'similarity-low': diagnostic.similarity < .6 }">
+                                        {{ diagnostic.similarity }}
+                                    </td>
+                                </tr>
+                            }
+                        }    
+                    }
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
