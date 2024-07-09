@@ -52,7 +52,7 @@ Method AnalyzeText(text As %String, id As %String) As %String [ Language = pytho
             
             i = 0
             for text in texts:
-                stmt = iris.sql.prepare("SELECT TOP 10 * FROM (SELECT CodeId, Description, VECTOR_DOT_PRODUCT(VectorDescription, TO_VECTOR(?, DECIMAL)) AS Similarity FROM ENCODER_Object.Codes) WHERE Similarity > 0.65 ORDER BY Similarity DESC")
+                stmt = iris.sql.prepare("SELECT TOP 50 * FROM (SELECT CodeId, Description, VECTOR_DOT_PRODUCT(VectorDescription, TO_VECTOR(?, DECIMAL)) AS Similarity FROM ENCODER_Object.Codes) WHERE Similarity > 0.65 ORDER BY Similarity DESC")
                 resultSet = stmt.execute(str(embeddingList[i]))
                 df = resultSet.dataframe()
                 if (df.size > 0):
