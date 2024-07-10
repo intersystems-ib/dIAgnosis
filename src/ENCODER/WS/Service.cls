@@ -15,6 +15,9 @@ XData UrlMap [ XMLNamespace = "https://www.intersystems.com/urlmap" ]
     <Route Url="/saveCodification" Method="POST" Call="SaveCodification" />
     <Route Url="/sendNotification" Method="POST" Call="SendNotification" />
     <Route Url="/analyzeText" Method="POST" Call="AnalyzeText" />
+    <Route Url="/saveRawText" Method="POST" Call="SaveRawText" />
+    <Route Url="/getAnalyzedText/:idAnalysis" Method="GET" Call="GetAnalyzedText" />
+    <Route Url="/getAnalysis" Method="GET" Call="GetAnalysis" />
 </Routes>
 }
 
@@ -148,6 +151,7 @@ ClassMethod AnalyzeText() As %Status
         set dynamicBody = {}.%FromJSON(%request.Content)
         set analysisRequest = ##class(ENCODER.Message.AnalysisRequest).%New()
         set analysisRequest.TextToAnalyze = dynamicBody.%Get("Text")
+        set analysisRequest.AnalysisId = dynamicBody.%Get("ID")
         
         // Creation of BS instance
         set status = ##class(Ens.Director).CreateBusinessService("ENCODER.BS.AnalyzeTextService", .instance)
@@ -167,6 +171,83 @@ ClassMethod AnalyzeText() As %Status
                     "RawText": (rs.%Get("RawText")),
                     "Description": (rs.%Get("Description")),
                     "Similarity": (rs.%Get("Similarity"))
+                })
+        }
+        write array.%ToJSON()
+        set %response.Status = ..#HTTP200OK
+
+    } catch ex {
+        set %response.Status = ..#HTTP400BADREQUEST
+        return ex.DisplayString()
+    }
+    quit ret
+}
+
+ClassMethod SaveRawText() As %Status
+{
+	set ret = $$$OK
+    try {
+        set dynamicBody = {}.%FromJSON(%request.Content)
+        set rawText = ##class(ENCODER.Object.RawTexts).%New()
+        set rawText.RawText = dynamicBody.%Get("Text")
+        set sc = rawText.%Save()
+        
+        write {"id": (rawText.%Id())}.%ToJSON()
+        set %response.Status = ..#HTTP200OK
+
+    } catch ex {
+        set %response.Status = ..#HTTP400BADREQUEST
+        return ex.DisplayString()
+    }
+    quit ret
+}
+
+ClassMethod GetAnalyzedText(idAnalysis As %String) As %Status
+{
+	set ret = $$$OK
+    try {
+        set sql = 
+            "SELECT CodeId, RawText, Description, max(Similarity) as Similarity FROM ENCODER_Object.TextMatches WHERE AnalysisId = ? GROUP BY CodeId"
+
+		set statement = ##class(%SQL.Statement).%New()
+		$$$ThrowOnError(statement.%Prepare(sql))
+        set rs = statement.%Execute(idAnalysis)
+
+        set array = []
+        while rs.%Next() {
+            do array.%Push({
+                    "CodeId": (rs.%Get("CodeId")),
+                    "RawText": (rs.%Get("RawText")),
+                    "Description": (rs.%Get("Description")),
+                    "Similarity": (rs.%Get("Similarity"))
+                })
+        }
+        write array.%ToJSON()
+        set %response.Status = ..#HTTP200OK
+
+    } catch ex {
+        set %response.Status = ..#HTTP400BADREQUEST
+        return ex.DisplayString()
+    }
+    quit ret
+}
+
+ClassMethod GetAnalysis() As %Status
+{
+	set ret = $$$OK
+    try {
+        set sql = "SELECT ID, RawText, AnalysisDate FROM ENCODER_Object.RawTexts"
+
+		set statement = ##class(%SQL.Statement).%New()
+		$$$ThrowOnError(statement.%Prepare(sql))
+        set rs = statement.%Execute()
+
+        set array = []
+        while rs.%Next() {
+            do array.%Push({
+                    "Id": (rs.%Get("ID")),
+                    "RawText": (rs.%Get("RawText")),
+                    "AnalysisDate": (rs.%Get("AnalysisDate"))
                 })
         }
         write array.%ToJSON()

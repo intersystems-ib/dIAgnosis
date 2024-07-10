@@ -5,7 +5,7 @@ Property CodeId As %String;
 
 Property Description As %String(MAXLEN = 256);
 
-Property VectorDescription As %Library.Vector(DATATYPE = "DECIMAL", LEN = 384);
+Property VectorDescription As %Library.Vector(DATATYPE = "DECIMAL", LEN = 768);
 
 Property CodeType As %String;
 

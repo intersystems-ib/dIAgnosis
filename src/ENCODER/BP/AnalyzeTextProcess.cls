@@ -5,12 +5,12 @@ Method OnRequest(pInput As ENCODER.Message.AnalysisRequest, Output pOutput As EN
 {
         
         set pOutput = ##class(ENCODER.Message.AnalysisResponse).%New()
-        set result = ..AnalyzeText(pInput.TextToAnalyze, pInput.%Id())
-        set pOutput.AnalysisRequestId = pInput.%Id()
+        set result = ..AnalyzeText(pInput.TextToAnalyze, pInput.AnalysisId)
+        set pOutput.AnalysisRequestId = pInput.AnalysisId
         return $$$OK
 }
 
-Method AnalyzeText(text As %String, id As %String) As %String [ Language = python ]
+Method AnalyzeText(text As %String, analysisId As %String) As %String [ Language = python ]
 {
     import sentence_transformers
     import iris
@@ -52,7 +52,7 @@ Method AnalyzeText(text As %String, id As %String) As %String [ Language = pytho
             
             i = 0
             for text in texts:
-                stmt = iris.sql.prepare("SELECT TOP 50 * FROM (SELECT CodeId, Description, VECTOR_DOT_PRODUCT(VectorDescription, TO_VECTOR(?, DECIMAL)) AS Similarity FROM ENCODER_Object.Codes) WHERE Similarity > 0.65 ORDER BY Similarity DESC")
+                stmt = iris.sql.prepare("SELECT TOP 50 * FROM (SELECT CodeId, Description, VECTOR_DOT_PRODUCT(VectorDescription, TO_VECTOR(?, DECIMAL)) AS Similarity FROM ENCODER_Object.Codes) WHERE Similarity > 0.75 ORDER BY Similarity DESC")
                 resultSet = stmt.execute(str(embeddingList[i]))
                 df = resultSet.dataframe()
                 if (df.size > 0):
@@ -62,7 +62,7 @@ Method AnalyzeText(text As %String, id As %String) As %String [ Language = pytho
                         textMatch.CodeId = str(row['codeid'])
                         textMatch.Description = str(row['description'])
                         textMatch.Similarity = str(row['similarity'])
-                        textMatch.AnalysisId = id
+                        textMatch.AnalysisId = analysisId
                         status = textMatch._Save()
                         result = result + "|"+ text+"_"+ str(row['codeid'])+":"+ str(row['description'])+":"+ str(row['similarity'])
                 i = i + 1

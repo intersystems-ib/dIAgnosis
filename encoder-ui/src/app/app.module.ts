@@ -9,13 +9,15 @@ import { HttpClientModule } from '@angular/common/http';
 import { CodelistComponent } from './codelist/codelist.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AnalyzerComponent } from './analyzer/analyzer.component';
+import { AnalysishistoryComponent } from './analysishistory/analysishistory.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     DiagnosisComponent,
     CodelistComponent,
-    AnalyzerComponent
+    AnalyzerComponent,
+    AnalysishistoryComponent
   ],
   imports: [
     BrowserModule,

@@ -29,7 +29,7 @@ ClassMethod DownloadModel() As %String [ Language = python ]
 {
     import sentence_transformers
 
-    model = sentence_transformers.SentenceTransformer('sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2')
+    model = sentence_transformers.SentenceTransformer('FremyCompany/BioLORD-2023-M')
     model.save('/shared/model/')
     return "Downloaded"
 }

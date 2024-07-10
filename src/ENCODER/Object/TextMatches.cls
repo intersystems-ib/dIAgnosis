@@ -11,6 +11,8 @@ Property Similarity As %Double;
 
 Property AnalysisId As %Integer;
 
+Index AnalysisIndex On AnalysisId;
+
 Storage Default
 {
 <Data name="TextMatchesDefaultData">

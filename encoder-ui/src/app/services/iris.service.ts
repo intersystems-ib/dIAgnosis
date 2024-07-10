@@ -44,4 +44,22 @@ export class IrisService {
       IRIS_API + 'analyzeText',text
     )
   }
+
+  saveRawText(text: any): Observable<any> {
+    return this.http.post<Response>(
+      IRIS_API + 'saveRawText',text
+    )
+  }
+
+  getTextAnalyzed(analysisId: String) {
+    return this.http.get<Response>(
+      IRIS_API + 'getAnalyzedText/'+analysisId
+    )
+  }
+
+  getAnalysis(): Observable<any> {
+    return this.http.get<Response>(
+      IRIS_API + 'getAnalysis'
+    )
+  }
 }
