@@ -3,7 +3,7 @@ Class ENCODER.Object.RawTexts Extends %Persistent
 
 Property RawText As %String(MAXLEN = 5000);
 
-Property AnalysisDate As %DateTime;
+Property AnalysisDate As %TimeStamp;
 
 Storage Default
 {

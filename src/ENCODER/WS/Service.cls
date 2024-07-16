@@ -187,7 +187,7 @@ ClassMethod SaveRawText() As %Status
         set dynamicBody = {}.%FromJSON(%request.Content)
         set rawText = ##class(ENCODER.Object.RawTexts).%New()
         set rawText.RawText = dynamicBody.%Get("Text")
-        set rawText.AnalysisDate = $ZDATETIMEH($HOROLOG, 4)
+        set rawText.AnalysisDate = $ZDATETIME($H,3,1)
         set sc = rawText.%Save()
         
         write {"id": (rawText.%Id())}.%ToJSON()

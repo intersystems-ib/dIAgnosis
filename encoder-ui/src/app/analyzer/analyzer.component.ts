@@ -55,6 +55,7 @@ export class AnalyzerComponent {
       "Text": textOriginal
     };
     this.irisService.saveRawText(rawText).subscribe({next: raw => {
+      this.totalReceived = 5
       for (var index in textToProcess){
         if (textToProcess[index] !== "")
         {
@@ -67,7 +68,7 @@ export class AnalyzerComponent {
               this.diagnostics = this.diagnostics.concat(res);
             }
             this.totalReceived += forReading;
-            if (this.totalReceived + 1 >= 100){
+            if (this.totalReceived >= 100){
               this.diagnostics.forEach((diagnostic, indexDiag) => {              
                 let phrase = "";
                 if (diagnostic.RawText.split(" ").length == 3){

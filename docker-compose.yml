@@ -15,3 +15,15 @@ services:
     environment:
     - ISC_DATA_DIRECTORY=/shared/durable
     command: --check-caps false --ISCAgent false
+
+    # angular
+  angular:
+    init: true
+    container_name: encoder-ui
+    build:
+      context: .
+      dockerfile: encoder-ui/Dockerfile
+    ports:
+      - 4200:4200
+    depends_on:
+      - iris
