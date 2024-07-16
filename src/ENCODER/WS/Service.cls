@@ -234,7 +234,7 @@ ClassMethod GetAnalysis() As %Status
 {
 	set ret = $$$OK
     try {
-        set sql = "SELECT ID, RawText, AnalysisDate FROM ENCODER_Object.RawTexts"
+        set sql = "SELECT R.ID, R.RawText, R.AnalysisDate FROM ENCODER_Object.RawTexts R JOIN ENCODER_Object.TextMatches T ON R.ID = T.AnalysisId GROUP BY R.ID"
 
 		set statement = ##class(%SQL.Statement).%New()
 		$$$ThrowOnError(statement.%Prepare(sql))
