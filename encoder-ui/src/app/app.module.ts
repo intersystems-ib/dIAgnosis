@@ -9,7 +9,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { CodelistComponent } from './codelist/codelist.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AnalyzerComponent } from './analyzer/analyzer.component';
-import { AnalysishistoryComponent } from './analysishistory/analysishistory.component';
+import { AnalysisComponent } from './analysis/analysis.component';
+import { FunctionsPipe } from './utils/functions.pipe';
 
 @NgModule({
   declarations: [
@@ -17,7 +18,8 @@ import { AnalysishistoryComponent } from './analysishistory/analysishistory.comp
     DiagnosisComponent,
     CodelistComponent,
     AnalyzerComponent,
-    AnalysishistoryComponent
+    AnalysisComponent,
+    FunctionsPipe
   ],
   imports: [
     BrowserModule,

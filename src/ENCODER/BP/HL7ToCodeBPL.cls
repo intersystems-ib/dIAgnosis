@@ -12,7 +12,10 @@ XData BPL [ XMLNamespace = "http://www.intersystems.com/bpl" ]
 <sequence xend='200' yend='450' >
 <transform name='From ADT to CodeRequest' class='ENCODER.DT.ADT01ToCodeRequest' source='request' target='context.codeRequest' xpos='200' ypos='250' />
 <code name='Save code request' xpos='200' ypos='350' >
-<![CDATA[ do context.codeRequest.%Save()]]>
+<![CDATA[ set vectorDescription = ##class(ENCODER.Utils.Manager).GetEncoding(context.codeRequest.Description)
+ set context.codeRequest.VectorDescription = context.codeRequest.VectorDescriptionDisplayToLogical(vectorDescription)
+ do context.codeRequest.%Save()
+]]>
 </code>
 </sequence>
 </process>

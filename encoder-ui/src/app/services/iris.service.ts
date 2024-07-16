@@ -51,7 +51,7 @@ export class IrisService {
     )
   }
 
-  getTextAnalyzed(analysisId: String) {
+  getTextAnalyzed(analysisId: String): Observable<any> {
     return this.http.get<Response>(
       IRIS_API + 'getAnalyzedText/'+analysisId
     )
@@ -60,6 +60,12 @@ export class IrisService {
   getAnalysis(): Observable<any> {
     return this.http.get<Response>(
       IRIS_API + 'getAnalysis'
+    )
+  }
+
+  getAnalysisDetails(analysisId: String): Observable<any> {
+    return this.http.get<Response>(
+      IRIS_API + 'getAnalysisDetails/'+analysisId
     )
   }
 }

@@ -7,6 +7,8 @@ Property Description As %String(MAXLEN = 256);
 
 Property Code As ENCODER.Object.Codes;
 
+Property VectorDescription As %Library.Vector(DATATYPE = "DECIMAL", LEN = 768);
+
 Property Notified As %Boolean;
 
 Storage Default
@@ -25,6 +27,9 @@ Storage Default
 <Value>Code</Value>
 </Value>
 <Value name="5">
+<Value>VectorDescription</Value>
+</Value>
+<Value name="6">
 <Value>Notified</Value>
 </Value>
 </Data>

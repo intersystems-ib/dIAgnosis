@@ -1,18 +1,46 @@
 <div class="w-100 h-100 overflow-hidden">
-    <div class="row">
+    <div class="row history">
         <div class="col">
-            <table>
-                <thead>
-                    <th>Text analyzed</th>
-                    <th>Analysis date</th>
-                </thead>
-                <tbody>
-                @for (row of analysis; track row){
-                    <td>{{row.analysisText}}</td>
-                    <td>{{row.analysisDate}}</td>
-                }
-                </tbody>
-            </table>
+            <div class="p-4 pb-0 h-100">
+                <label class="font-weight-bold">Textos analizados:</label>
+                <div class="h-100 w-100 border text-section overflow-hidden">
+                    @if (loadingMain){
+                        <div class="d-flex justify-content-center h-100 align-items-center">
+                            <div class="spinner-border" role="status">
+                            </div>
+                        </div>                        
+                    }
+                    @if(!loadingMain && !error){
+                    <table class="table table-striped table-hover ">
+                        <thead>
+                            <tr>
+                                <th scope="col">ID</th>
+                                <th scope="col">Texto analizado</th>
+                                <th scope="col">Fecha de análisis</th>
+                            </tr>                            
+                        </thead>
+                        <tbody>
+                        @for (row of analysis; track row){
+                            <tr (click)="analysisSelected(row.Id, row.RawText)">
+                                <td>{{row.Id}}</td>
+                                <td>{{row.RawText | truncate:[100,'...']}}</td>
+                                <td>{{row.AnalysisDate}}</td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                    <div class="d-flex justify-content-between p-2">
+                        <ngb-pagination
+                            [collectionSize]="collectionSize"
+                            [(page)]="page"
+                            [pageSize]="pageSize"
+                            (pageChange)="refreshOptions()"
+                        >
+                        </ngb-pagination>
+                    </div>
+                    }
+                </div>                
+            </div>
         </div>
     </div>
     <div class="row h-50">        
@@ -21,7 +49,10 @@
                 <label class="font-weight-bold">Hallazgos:</label>
                 @if (loading && !error) {
                 <div class="h-100 w-100 text-section border d-flex align-items-center justify-content-center">
-                    <ngb-progressbar class="m-3 w-100" [showValue]="true" type="success" [value]="totalReceived" />
+                    <div class="d-flex justify-content-center h-100 align-items-center">
+                        <div class="spinner-border" role="status">
+                        </div>
+                    </div> 
                 </div>    
                 }
                 @if (!loading && !error) {

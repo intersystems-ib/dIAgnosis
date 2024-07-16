@@ -8,6 +8,7 @@ XData BPL [ XMLNamespace = "http://www.intersystems.com/bpl" ]
 <process language='objectscript' request='ENCODER.Message.NotifyRequest' response='EnsLib.HL7.Message' height='2000' width='2000' >
 <context>
 <property name='codeRequest' type='ENCODER.Object.CodeRequests' instantiate='0' />
+<property name='code' type='ENCODER.Object.Codes' instantiate='0' />
 <property name='originalMessage' type='EnsLib.HL7.Message' instantiate='0' />
 <property name='finalMessage' type='EnsLib.HL7.Message' instantiate='0' />
 </context>

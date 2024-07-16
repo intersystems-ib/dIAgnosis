@@ -18,12 +18,24 @@ export class DiagnosisComponent implements OnInit {
   pageSize = 10;
   collectionSize = 0;
   loading = true;
+  screenHeight: number = 0;
 
   constructor(private irisService: IrisService) {
     
   }
 
   ngOnInit() {
+    this.screenHeight = window.innerHeight;
+    if (this.screenHeight < 900) {
+      this.pageSize = 10
+    }
+    else if (this.screenHeight > 900 && this.screenHeight < 1200 ) {
+      this.pageSize = 15
+    }
+    else {
+      this.pageSize = 20
+    }
+
     this.loadRequests()
   }
 

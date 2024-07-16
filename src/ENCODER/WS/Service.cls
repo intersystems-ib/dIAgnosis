@@ -18,6 +18,7 @@ XData UrlMap [ XMLNamespace = "https://www.intersystems.com/urlmap" ]
     <Route Url="/saveRawText" Method="POST" Call="SaveRawText" />
     <Route Url="/getAnalyzedText/:idAnalysis" Method="GET" Call="GetAnalyzedText" />
     <Route Url="/getAnalysis" Method="GET" Call="GetAnalysis" />
+    <Route Url="/getAnalysisDetails/:idAnalysis" Method="GET" Call="GetAnalysisDetails" />
 </Routes>
 }
 
@@ -40,16 +41,12 @@ ClassMethod GetCodeOptions(idRequest As %String) As %Status
 {
 	set ret = $$$OK
     try {
-        set codeRequest = ##class(ENCODER.Object.CodeRequests).%OpenId(idRequest)
-		set vectorDescription = ##class(ENCODER.Utils.Manager).GetEncoding(codeRequest.Description)
-		//set description = $get(%request.Data("description",1))
-
         set sql = 
-            "SELECT TOP 50 * FROM (SELECT CodeId, Description, VECTOR_DOT_PRODUCT(VectorDescription, TO_VECTOR(?, DECIMAL)) AS Similarity FROM ENCODER_Object.Codes) WHERE Similarity > 0.4 ORDER BY Similarity DESC"
+            "SELECT TOP 25 * FROM (SELECT C.CodeId, C.Description, VECTOR_DOT_PRODUCT(C.VectorDescription, R.VectorDescription) AS Similarity FROM ENCODER_Object.Codes C, ENCODER_Object.CodeRequests R WHERE R.ID = ?) WHERE Similarity > 0.5 ORDER BY Similarity DESC"
 
 		set statement = ##class(%SQL.Statement).%New()
 		$$$ThrowOnError(statement.%Prepare(sql))
-        set rs = statement.%Execute(vectorDescription)
+        set rs = statement.%Execute(idRequest)
 
         set array = []
         while rs.%Next() {
@@ -190,6 +187,7 @@ ClassMethod SaveRawText() As %Status
         set dynamicBody = {}.%FromJSON(%request.Content)
         set rawText = ##class(ENCODER.Object.RawTexts).%New()
         set rawText.RawText = dynamicBody.%Get("Text")
+        set rawText.AnalysisDate = $ZDATETIMEH($HOROLOG, 4)
         set sc = rawText.%Save()
         
         write {"id": (rawText.%Id())}.%ToJSON()
@@ -248,6 +246,36 @@ ClassMethod GetAnalysis() As %Status
                     "Id": (rs.%Get("ID")),
                     "RawText": (rs.%Get("RawText")),
                     "AnalysisDate": (rs.%Get("AnalysisDate"))
+                })
+        }
+        write array.%ToJSON()
+        set %response.Status = ..#HTTP200OK
+
+    } catch ex {
+        set %response.Status = ..#HTTP400BADREQUEST
+        return ex.DisplayString()
+    }
+    quit ret
+}
+
+ClassMethod GetAnalysisDetails(idAnalysis As %String) As %Status
+{
+	set ret = $$$OK
+    try {
+        set sql = 
+            "SELECT CodeId, RawText, Description, max(Similarity) as Similarity FROM ENCODER_Object.TextMatches WHERE AnalysisId = ? GROUP BY CodeId"
+
+		set statement = ##class(%SQL.Statement).%New()
+		$$$ThrowOnError(statement.%Prepare(sql))
+        set rs = statement.%Execute(idAnalysis)
+
+        set array = []
+        while rs.%Next() {
+            do array.%Push({
+                    "CodeId": (rs.%Get("CodeId")),
+                    "RawText": (rs.%Get("RawText")),
+                    "Description": (rs.%Get("Description")),
+                    "Similarity": (rs.%Get("Similarity"))
                 })
         }
         write array.%ToJSON()

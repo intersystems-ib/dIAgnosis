@@ -1,0 +1,24 @@
+.history {
+    height: 45vh;
+}
+.text-section {
+    max-height: 40vh;
+    overflow-y: auto;
+    border-radius: 8px;
+}
+.similarity-veryhigh {
+    background-color: #27AE60;
+    color: white;
+}
+.similarity-high {
+    background-color: #46C84E;
+    color: white;
+}
+.similarity-medium {
+    background-color: #FFC300;
+    color: black;
+}
+.similarity-low {
+    background-color: #FF5733;
+    color: black;
+}
