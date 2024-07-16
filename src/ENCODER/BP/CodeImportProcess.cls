@@ -10,7 +10,7 @@ Method OnRequest(pInput As ENCODER.Message.GenericRequest, Output pOutput As ENC
             set result = ..FinishCIE10()
         }
         else {
-            //set result = ..ParseCIE10(pInput.FilePath, pInput.CodeType)
+            set result = ..ParseCIE10(pInput.FilePath, pInput.CodeType)
         }
         set pOutput = ##class(ENCODER.Message.GenericResponse).%New()
         set pOutput.Result = result
