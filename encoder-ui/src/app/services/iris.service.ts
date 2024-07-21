@@ -68,4 +68,10 @@ export class IrisService {
       IRIS_API + 'getAnalysisDetails/'+analysisId
     )
   }
+
+  saveCodesFile(file: any): Observable<any> {
+    return this.http.post<Response>(
+      IRIS_API + 'saveCodeFile',file
+    )
+  }
 }

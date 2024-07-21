@@ -11,6 +11,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AnalyzerComponent } from './analyzer/analyzer.component';
 import { AnalysisComponent } from './analysis/analysis.component';
 import { FunctionsPipe } from './utils/functions.pipe';
+import { LoaderComponent } from './loader/loader.component';
+import { TranslocoRootModule } from './transloco-root.module';
 
 @NgModule({
   declarations: [
@@ -19,6 +21,7 @@ import { FunctionsPipe } from './utils/functions.pipe';
     CodelistComponent,
     AnalyzerComponent,
     AnalysisComponent,
+    LoaderComponent,
     FunctionsPipe
   ],
   imports: [
@@ -31,7 +34,8 @@ import { FunctionsPipe } from './utils/functions.pipe';
     NgbTypeaheadModule,
     ReactiveFormsModule,
     FormsModule,
-    HttpClientModule
+    HttpClientModule,
+    TranslocoRootModule
   ],
   providers: [],
   bootstrap: [AppComponent]

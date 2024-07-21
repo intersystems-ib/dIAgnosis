@@ -19,6 +19,7 @@ XData UrlMap [ XMLNamespace = "https://www.intersystems.com/urlmap" ]
     <Route Url="/getAnalyzedText/:idAnalysis" Method="GET" Call="GetAnalyzedText" />
     <Route Url="/getAnalysis" Method="GET" Call="GetAnalysis" />
     <Route Url="/getAnalysisDetails/:idAnalysis" Method="GET" Call="GetAnalysisDetails" />
+    <Route Url="/saveCodeFile" Method="POST" Call="SaveCodeFile" />
 </Routes>
 }
 
@@ -288,4 +289,23 @@ ClassMethod GetAnalysisDetails(idAnalysis As %String) As %Status
     quit ret
 }
 
+ClassMethod SaveCodeFile() As %Status
+{
+	set ret = $$$OK
+    try {
+        set dynamicBody = {}.%FromJSON(%request.Content)
+        set dynamicStream = dynamicBody.%Get("File",,"stream<base64")
+        
+        set stream=##class(%Stream.FileBinary).%New()
+        set sc=stream.LinkToFile("/shared/durable/codes.csv")
+        set sc=stream.CopyFromAndSave(dynamicStream)
+
+        set %response.Status = ..#HTTP200OK
+
+    } catch ex {
+        set %response.Status = ..#HTTP400BADREQUEST
+        return ex.DisplayString()
+    }
+    quit ret
+}
 }

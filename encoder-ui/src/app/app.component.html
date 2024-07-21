@@ -3,24 +3,37 @@
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation" (click)="open(content)">
       <span class="navbar-toggler-icon"></span>
     </button>
-    <a class="navbar-brand" href="#">d<b>[IA]</b>gnosis</a>    
+    <a class="navbar-brand" href="#">d<b>[IA]</b>gnosis</a>
+    <select class="form-select" style="width: 8em;"
+      [ngModel]="selectLang"
+      (ngModelChange)="selectLanguage($event)">
+      <option value="es">
+          {{ 'LANGUAGE-ES' | transloco }}
+      </option>
+      <option value="en">
+          {{ 'LANGUAGE-EN' | transloco }}
+      </option>
+    </select>
   </div>
 </nav>
 <ng-template #content let-offcanvas>
 	<div class="offcanvas-header">
-		<h4 class="offcanvas-title" id="offcanvas-basic-title">Menú de d<b>[IA]</b>gnosis</h4>
+		<h4 class="offcanvas-title" id="offcanvas-basic-title">{{ 'DIAGNOSIS-MENU' | transloco }}</h4>
 		<button type="button" class="btn-close" aria-label="Close" (click)="offcanvas.dismiss('Cross click')"></button>
 	</div>
 	<div class="offcanvas-body">
     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
       <li class="nav-item">
-        <a class="nav-link active" aria-current="page" routerLink="/" (click)="offcanvas.dismiss('Option click')">Solicitudes de diagnóstico</a>
+        <a class="nav-link active" aria-current="page" routerLink="/loader" (click)="offcanvas.dismiss('Option click')">{{ 'IMPORT-CSV' | transloco }}</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link active" aria-current="page" routerLink="/analyzer" (click)="offcanvas.dismiss('Option click')">Analizador de texto</a>
+        <a class="nav-link active" aria-current="page" routerLink="/" (click)="offcanvas.dismiss('Option click')">{{'DIAGNOSTIC-REQUESTS' | transloco }}</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link active" aria-current="page" routerLink="/analysis" (click)="offcanvas.dismiss('Option click')">Historial de análisis</a>
+        <a class="nav-link active" aria-current="page" routerLink="/analyzer" (click)="offcanvas.dismiss('Option click')">{{'TEXT-ANALYZER' | transloco }}</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link active" aria-current="page" routerLink="/analysis" (click)="offcanvas.dismiss('Option click')">{{'ANALYSIS-HISTORY' | transloco }}</a>
       </li>
     </ul>
   </div>
