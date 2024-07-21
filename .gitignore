@@ -3,6 +3,10 @@ shared/model/*
 !shared/model/.gitkeep
 shared/HL7Out/*
 !shared/HL7Out/.gitkeep
+shared/in/*
+!shared/in/.gitkeep
+shared/HL7In/*
+!shared/HL7In/.gitkeep
 settings.json
 # Compiled output
 encoder-ui/dist

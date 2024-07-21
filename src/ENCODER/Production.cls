@@ -26,6 +26,7 @@ XData ProductionDefinition
   </Item>
   <Item Name="HL7_File_Out" Category="" ClassName="EnsLib.HL7.Operation.FileOperation" PoolSize="1" Enabled="true" Foreground="false" Comment="" LogTraceEvents="false" Schedule="">
     <Setting Target="Adapter" Name="FilePath">/shared/HL7Out/</Setting>
+    <Setting Target="Host" Name="DefCharEncoding">utf-8</Setting>
   </Item>
   <Item Name="ENCODER.BP.AnalyzeTextProcess" Category="" ClassName="ENCODER.BP.AnalyzeTextProcess" PoolSize="10" Enabled="true" Foreground="false" Comment="" LogTraceEvents="true" Schedule="">
   </Item>
