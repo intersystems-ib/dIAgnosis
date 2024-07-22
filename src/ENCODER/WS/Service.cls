@@ -20,6 +20,7 @@ XData UrlMap [ XMLNamespace = "https://www.intersystems.com/urlmap" ]
     <Route Url="/getAnalysis" Method="GET" Call="GetAnalysis" />
     <Route Url="/getAnalysisDetails/:idAnalysis" Method="GET" Call="GetAnalysisDetails" />
     <Route Url="/saveCodeFile" Method="POST" Call="SaveCodeFile" />
+    <Route Url="/getVectorizationInfo" Method="GET" Call="GetVectorizationInfo" />
 </Routes>
 }
 
@@ -297,9 +298,9 @@ ClassMethod SaveCodeFile() As %Status
         set dynamicStream = dynamicBody.%Get("File",,"stream<base64")
         
         set stream=##class(%Stream.FileBinary).%New()
-        set sc=stream.LinkToFile("/shared/durable/codes.csv")
+        set sc=stream.LinkToFile("/shared/in/codes.csv")
         set sc=stream.CopyFromAndSave(dynamicStream)
-
+        HANG 5
         set %response.Status = ..#HTTP200OK
 
     } catch ex {
@@ -308,4 +309,34 @@ ClassMethod SaveCodeFile() As %Status
     }
     quit ret
 }
+
+ClassMethod GetVectorizationInfo() As %Status
+{
+	set ret = $$$OK
+    try {
+        set sql = "SELECT Total.totalValue As TotalRecords, Vectorized.vectorizedValue As VectorizedRecords FROM "_
+        "(SELECT count(ID) as totalValue FROM ENCODER_Object.Codes) Total, "_
+        "(SELECT count(ID) as vectorizedValue FROM ENCODER_Object.Codes WHERE VectorDescription is not null) Vectorized"
+
+		set statement = ##class(%SQL.Statement).%New()
+		$$$ThrowOnError(statement.%Prepare(sql))
+        set rs = statement.%Execute()
+
+        set result = {}
+        while rs.%Next() {
+            set result = {
+                    "TotalRecords": (rs.%Get("TotalRecords")),
+                    "VectorizedRecords": (rs.%Get("VectorizedRecords"))
+                }
+        }
+        write result.%ToJSON()
+        set %response.Status = ..#HTTP200OK
+
+    } catch ex {
+        set %response.Status = ..#HTTP400BADREQUEST
+        return ex.DisplayString()
+    }
+    quit ret
+}
+
 }

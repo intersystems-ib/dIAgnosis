@@ -74,4 +74,10 @@ export class IrisService {
       IRIS_API + 'saveCodeFile',file
     )
   }
+
+  getVectorizationInfo(): Observable<any> {
+    return this.http.get<Response>(
+      IRIS_API + 'getVectorizationInfo'
+    )
+  }
 }
