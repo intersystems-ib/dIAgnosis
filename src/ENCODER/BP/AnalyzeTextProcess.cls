@@ -39,10 +39,6 @@ Method AnalyzeText(text As %String, analysisId As %String) As %String [ Language
             while i + 3 <= totalWords :
                 texts.append(words[i]+" "+words[i+1]+" "+words[i+2])
                 i = i + 1
-            i = 0
-            while i + 4 <= totalWords :
-                texts.append(words[i]+" "+words[i+1]+" "+words[i+2]+" "+words[i+3])
-                i = i + 1
             
             if len(texts) == 0 :
                 texts.append(phrase)

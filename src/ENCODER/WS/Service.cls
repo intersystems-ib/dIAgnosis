@@ -207,7 +207,7 @@ ClassMethod GetAnalyzedText(idAnalysis As %String) As %Status
 	set ret = $$$OK
     try {
         set sql = 
-            "SELECT CodeId, RawText, Description, max(Similarity) as Similarity FROM ENCODER_Object.TextMatches WHERE AnalysisId = ? GROUP BY CodeId"
+            "SELECT CodeId, RawText, Description, max(Similarity) as Similarity FROM ENCODER_Object.TextMatches WHERE AnalysisId = ? GROUP BY CodeId ORDER BY Similarity DESC"
 
 		set statement = ##class(%SQL.Statement).%New()
 		$$$ThrowOnError(statement.%Prepare(sql))

@@ -2,7 +2,7 @@
     <div class="row history">
         <div class="col">
             <div class="p-4 pb-0 h-100">
-                <label class="font-weight-bold">Textos analizados:</label>
+                <label class="font-weight-bold">{{ 'ANALYZED-TEXTS' | transloco }}:</label>
                 <div class="h-100 w-100 border text-section overflow-hidden">
                     @if (loadingMain){
                         <div class="d-flex justify-content-center h-100 align-items-center">
@@ -14,9 +14,9 @@
                     <table class="table table-striped table-hover ">
                         <thead>
                             <tr>
-                                <th scope="col">ID</th>
-                                <th scope="col">Texto analizado</th>
-                                <th scope="col">Fecha de análisis</th>
+                                <th scope="col">{{ 'ID' | transloco }}</th>
+                                <th scope="col">{{ 'ANALYZED-TEXTS' | transloco }}</th>
+                                <th scope="col">{{ 'ANALYSIS-DATE' | transloco }}</th>
                             </tr>                            
                         </thead>
                         <tbody>
@@ -46,7 +46,7 @@
     <div class="row h-50">        
         <div class="col-6">
             <div class="p-4 h-100">
-                <label class="font-weight-bold">Hallazgos:</label>
+                <label class="font-weight-bold">{{'FINDINGS' | transloco}}:</label>
                 @if (loading && !error) {
                 <div class="h-100 w-100 text-section border d-flex align-items-center justify-content-center">
                     <div class="d-flex justify-content-center h-100 align-items-center">
@@ -62,14 +62,14 @@
                 }
                 @if (error) {
                 <div class="h-100 w-100 border d-flex align-items-center justify-content-center">
-                    <ngb-progressbar class="m-3 w-100" [showValue]="false" type="danger" [value]="100">Error, please, try again!</ngb-progressbar>
+                    <ngb-progressbar class="m-3 w-100" [showValue]="false" type="danger" [value]="100">{{'ERROR-MESSAGE' | transloco}}:</ngb-progressbar>
                 </div>    
                 }
             </div>
         </div>
         <div class="col-6">
             <div class="p-4 h-100">
-                <label class="font-weight-bold">Posibles diagnósticos:</label>
+                <label class="font-weight-bold">{{'POSSIBLE-DIAGNOSES' | transloco}}:</label>
                 <div class="h-100 w-100 border text-section">
                     @if (loading){
                         <div class="d-flex justify-content-center h-100 align-items-center">
@@ -81,10 +81,10 @@
                     <table class="table table-striped table-hover">
                         <thead>
                             <tr>
-                                <th scope="col">Texto</th>
-                                <th scope="col">Código</th>
-                                <th scope="col">Descripción</th>
-                                <th scope="col">Similitud</th>
+                                <th scope="col">{{'TEXT' | transloco}}</th>
+                                <th scope="col">{{'CODE' | transloco}}</th>
+                                <th scope="col">{{'DESCRIPTION' | transloco}}</th>
+                                <th scope="col">{{'SIMILARITY' | transloco}}</th>
                             </tr>
                         </thead>
                         <tbody>                                            

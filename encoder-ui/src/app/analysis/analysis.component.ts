@@ -97,7 +97,7 @@ export class AnalysisComponent implements OnInit{
           }
         }
         else if (diagnostic.RawText.split(" ").length == 2){
-          const matchValue = this.textOriginal.match(new RegExp(diagnostic.RawText.split(" ")[0] + " (.{0,100}) " +diagnostic.RawText.split(" ")[1],"ig"));
+          const matchValue = textSelected.match(new RegExp(diagnostic.RawText.split(" ")[0] + " (.{0,100}) " +diagnostic.RawText.split(" ")[1],"ig"));
           if (matchValue) {
             phrase = matchValue[0];
           }

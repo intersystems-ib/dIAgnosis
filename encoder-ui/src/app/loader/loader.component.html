@@ -2,38 +2,38 @@
     <div class="row loader-section">
         <div class="col">
             <div class="p-4 pb-0 h-100">
-                <label class="font-weight-bold">Importar códigos CSV:</label>
+                <label class="font-weight-bold">{{'CSV-IMPORT' | transloco}}:</label>
                 <div class="h-100 w-100 border text-section overflow-hidden p-2">
-                    <label>El formato de fichero csv deberá seguír las siguientes condiciones:</label>
+                    <label>{{'CSV-FORMAT' | transloco}}:</label>
                     <ol>
                         <li>
-                            Sin cabecera.
+                            {{'NO-HEADERS' | transloco}}
                         </li>
                         <li>
-                            Campos separados por el carácter <b>;</b>
+                            {{'SEPARATION-CHARACTER' | transloco}} <b>;</b>
                         </li>
                         <li>
-                            Primera columna: código CIE
+                            {{'COLUMN-ICD' | transloco}}
                         </li>
                         <li>
-                            Segunda columna: descripción
+                            {{'COLUMN-DESCRIPTION' | transloco}}
                         </li>
                     </ol>
                     <p class="terminal w-50">
-                        A00.0;Cólera debido a Vibrio cholerae 01, biotipo cholerae;<br/>
-                        A00.1;Cólera debido a Vibrio cholerae 01, biotipo El Tor;<br/>
-                        A00.9;Cólera, no especificado;<br/>
-                        A01.00;Fiebre tifoidea, no especificada;<br/>
-                        A01.01;Meningitis tifoidea;
+                        A00.0;{{'DIAG-1' | transloco}};<br/>
+                        A00.1;{{'DIAG-2' | transloco}};<br/>
+                        A00.9;{{'DIAG-3' | transloco}};<br/>
+                        A01.00;{{'DIAG-4' | transloco}};<br/>
+                        A01.01;{{'DIAG-5' | transloco}};
                     </p>
                     <p>
                         <input type="file" (change)="onFileChange($event)" accept="csv/*" [ngClass]="{'disabled': loading}">
                     </p>
                     <p>
-                        Registros importados: {{recordsSaved}}
+                        {{'IMPORTED-RECORDS' | transloco}}: {{recordsSaved}}
                     </p>
                     <p>
-                        Registros vectorizados: {{recordsVectorized}}
+                        {{'VECTORIZED-RECORDS' | transloco}}: {{recordsVectorized}}
                     </p>
                     <p>
                         <ngb-progressbar class="w-100" [showValue]="true" type="success" [value]="percentageVectorized" />

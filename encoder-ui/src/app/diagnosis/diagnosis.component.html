@@ -9,10 +9,10 @@
 	<thead>
 		<tr>
 			<th scope="col">#</th>
-			<th scope="col">Diagnóstico</th>
-			<th scope="col">Código CIE-10</th>
-			<th scope="col">Descripción CIE-10</th>
-			<th scope="col">Acción</th>
+			<th scope="col">{{'DIAGNOSIS' | transloco}}</th>
+			<th scope="col">{{'ICD-CODE' | transloco}}</th>
+			<th scope="col">{{'ICD-DESCRIPTION' | transloco}}</th>
+			<th scope="col">{{'ACTION' | transloco}}</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -54,9 +54,9 @@
 	</ngb-pagination>
 
 	<select class="form-select" style="width: auto" [(ngModel)]="pageSize" (ngModelChange)="refreshRequests()">
-		<option [ngValue]="10" selected>10 códigos por página</option>
-		<option [ngValue]="15">15 códigos por página</option>
-		<option [ngValue]="20">20 códigos por página</option>
+		<option [ngValue]="10" selected>10 {{'CODES-PAGE' | transloco}}</option>
+		<option [ngValue]="15">15 {{'CODES-PAGE' | transloco}}</option>
+		<option [ngValue]="20">20 {{'CODES-PAGE' | transloco}}</option>
 	</select>
 </div>
 <ng-template #content let-modal>
