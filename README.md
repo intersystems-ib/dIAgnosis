@@ -51,7 +51,7 @@ Developed on Angular provides an easy to use user interface sending REST calls t
 ![image](https://github.com/intersystems-ib/dIAgnosis/blob/main/assets/analysis_text.png)
 
 * Screen with a history of text analysis:
-![image](https://github.com/intersystems-ib/dIAgnosis/blob/main/assets/analyzed_text.png)
+![image](https://github.com/intersystems-ib/dIAgnosis/blob/main/assets/analyzed_texts.png)
 
 # Testing the project 
 * Run the containers to deploy the backend and the frontend:
