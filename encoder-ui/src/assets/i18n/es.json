@@ -36,5 +36,6 @@
     "DIAG-4": "Fiebre tifoidea, no especificada",
     "DIAG-5": "Meningitis tifoidea",
     "IMPORTED-RECORDS": "Registros importados",
-    "VECTORIZED-RECORDS": "Registros vectorizados"
+    "VECTORIZED-RECORDS": "Registros vectorizados",
+    "SIMILARITIES": "Similitudes encontradas para"
 }
