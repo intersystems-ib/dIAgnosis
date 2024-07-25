@@ -5,12 +5,12 @@ Method OnRequest(pInput As ENCODER.Message.AnalysisRequest, Output pOutput As EN
 {
         
         set pOutput = ##class(ENCODER.Message.AnalysisResponse).%New()
-        set result = ..AnalyzeText(pInput.TextToAnalyze, pInput.AnalysisId)
+        set result = ..AnalyzeText(pInput.TextToAnalyze, pInput.AnalysisId, pInput.LanguageSelected)
         set pOutput.AnalysisRequestId = pInput.AnalysisId
         return $$$OK
 }
 
-Method AnalyzeText(text As %String, analysisId As %String) As %String [ Language = python ]
+Method AnalyzeText(text As %String, analysisId As %String, language As %String) As %String [ Language = python ]
 {
     import sentence_transformers
     import iris
@@ -18,7 +18,13 @@ Method AnalyzeText(text As %String, analysisId As %String) As %String [ Language
 
     def lematizeText(textToLematize):        
 
-        nlp = spacy.load('es_core_news_sm')
+        lematize = ''
+        if language == 'es':
+            lematize = 'es_core_news_sm'
+        else:
+            lematize = 'en_core_web_sm'
+
+        nlp = spacy.load(lematize)
         doc = nlp(textToLematize)
         words = [t.orth_ for t in doc if not t.is_punct | t.is_stop]
         lexical_tokens = [t.lower() for t in words if t.isalpha()]
@@ -48,7 +54,7 @@ Method AnalyzeText(text As %String, analysisId As %String) As %String [ Language
             
             i = 0
             for text in texts:
-                stmt = iris.sql.prepare("SELECT TOP 50 * FROM (SELECT CodeId, Description, VECTOR_DOT_PRODUCT(VectorDescription, TO_VECTOR(?, DECIMAL)) AS Similarity FROM ENCODER_Object.Codes) WHERE Similarity > 0.75 ORDER BY Similarity DESC")
+                stmt = iris.sql.prepare("SELECT TOP 50 * FROM (SELECT CodeId, Description, VECTOR_DOT_PRODUCT(VectorDescription, TO_VECTOR(?, DECIMAL)) AS Similarity FROM ENCODER_Object.Codes) WHERE Similarity > 0.8 ORDER BY Similarity DESC")
                 resultSet = stmt.execute(str(embeddingList[i]))
                 df = resultSet.dataframe()
                 if (df.size > 0):

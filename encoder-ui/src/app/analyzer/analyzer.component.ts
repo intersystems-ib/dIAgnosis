@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { IrisService } from '../services/iris.service';
+import { TranslocoService } from '@ngneat/transloco';
 
 interface Diagnostic {
   code: String;
@@ -28,7 +29,9 @@ export class AnalyzerComponent {
   totalReceived = 0;
   textAndDiagnosticList: Array<TextAndDiagnostic> = [];
 
-  constructor(private irisService: IrisService) 
+  constructor(private irisService: IrisService,
+    private translocoService: TranslocoService
+  ) 
   {
     
   }
@@ -61,7 +64,8 @@ export class AnalyzerComponent {
         {
           const textData = {
             "ID": raw.id,
-            "Text": textToProcess[index]
+            "Text": textToProcess[index],
+            "Language": this.translocoService.getDefaultLang()
           };
           this.irisService.analyzeText(textData).subscribe({next: res =>{
             if (res.length > 0){

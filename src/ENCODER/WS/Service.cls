@@ -151,13 +151,14 @@ ClassMethod AnalyzeText() As %Status
         set analysisRequest = ##class(ENCODER.Message.AnalysisRequest).%New()
         set analysisRequest.TextToAnalyze = dynamicBody.%Get("Text")
         set analysisRequest.AnalysisId = dynamicBody.%Get("ID")
+        set analysisRequest.LanguageSelected = dynamicBody.%Get("Language")
         
         // Creation of BS instance
         set status = ##class(Ens.Director).CreateBusinessService("ENCODER.BS.AnalyzeTextService", .instance)
         set tSC = instance.SendRequestSync("ENCODER.BP.AnalyzeTextProcess", analysisRequest, .response)
 
         set sql = 
-            "SELECT CodeId, RawText, Description, max(Similarity) as Similarity FROM ENCODER_Object.TextMatches WHERE AnalysisId = ? GROUP BY CodeId"
+            "SELECT CodeId, RawText, Description, max(Similarity) as Similarity FROM ENCODER_Object.TextMatches WHERE AnalysisId = ? GROUP BY CodeId ORDER BY Similarity DESC"
 
 		set statement = ##class(%SQL.Statement).%New()
 		$$$ThrowOnError(statement.%Prepare(sql))
