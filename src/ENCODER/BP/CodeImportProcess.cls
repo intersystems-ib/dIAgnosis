@@ -27,9 +27,7 @@ Method ParseCIE10(filePath As %String, codeType As %String) As %String [ Languag
 
     try :
         if not os.path.isdir('/shared/model/'):
-            # model = sentence_transformers.SentenceTransformer('jaimevera1107/all-MiniLM-L6-v2-similarity-es')
             model = sentence_transformers.SentenceTransformer('FremyCompany/BioLORD-2023-M')            
-            # model = sentence_transformers.SentenceTransformer('sentence-transformers/paraphrase-multilingual-mpnet-base-v2')
             model.save('/shared/model/')
         
         stmt = iris.sql.prepare("TRUNCATE TABLE ENCODER_Object.Codes")
