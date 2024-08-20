@@ -67,43 +67,61 @@ export class AnalyzerComponent {
             "Text": textToProcess[index],
             "Language": this.translocoService.getActiveLang()
           };
-          this.irisService.analyzeText(textData).subscribe({next: res =>{
-            if (res.length > 0){
-              this.diagnostics = this.diagnostics.concat(res);
-            }
+          this.irisService.analyzeText(textData).subscribe({next: resp =>{
             this.totalReceived += forReading;
             if (this.totalReceived >= 100){
-              this.diagnostics.forEach((diagnostic, indexDiag) => {              
-                let phrase = "";
-                if (diagnostic.RawText.split(" ").length == 3){
-                  phrase = textOriginal.match(new RegExp(diagnostic.RawText.split(" ")[0] + " (.{0,100}) " +diagnostic.RawText.split(" ")[2],"ig"))[0];
+              this.irisService.getAnalysisDetails(raw.id).subscribe({next: res => {
+                if (res.length > 0){
+                  this.diagnostics = this.diagnostics.concat(res);
                 }
-                else if (diagnostic.RawText.split(" ").length == 2){
-                  phrase = textOriginal.match(new RegExp(diagnostic.RawText.split(" ")[0] + " (.{0,100}) " +diagnostic.RawText.split(" ")[1],"ig"))[0];
-                }
-                else if (diagnostic.RawText.split(" ").length == 4){
-                  phrase = textOriginal.match(new RegExp(diagnostic.RawText.split(" ")[0] + " (.{0,100}) " +diagnostic.RawText.split(" ")[3],"ig"))[0];
-                }
-                else if (diagnostic.RawText.split(" ").length == 1){
-                  phrase = textOriginal.match(diagnostic.RawText);
-                }
-                var indexDiag = this.textAndDiagnosticList.findIndex(obj => obj.rawText == phrase);
-                const diagnosticEncoded: Diagnostic = {code: diagnostic.CodeId, description: diagnostic.Description, similarity: diagnostic.Similarity}
-                if (indexDiag == -1)
-                {
-                  textHTML = textHTML.replace(phrase,"<mark>"+phrase+"</mark>");
-                  let textAndDiagnostic: TextAndDiagnostic = {rawText: phrase, diagnostics: []};
-                  textAndDiagnostic.diagnostics.push(diagnosticEncoded);
-                  this.textAndDiagnosticList.push(textAndDiagnostic);
-                }
-                else {
-                  this.textAndDiagnosticList[indexDiag].diagnostics.push(diagnosticEncoded)
-                }                           
-              })
-              this.textUpdated = textHTML
-              this.loading = false;
-            }
-          },
+                this.diagnostics.forEach((diagnostic, indexDiag) => {              
+                    let phrase: string = "";
+                    if (diagnostic.RawText.split(" ").length == 3){
+                      const matchValue = textOriginal.match(new RegExp(diagnostic.RawText.split(" ")[0] + " (.{0,100}) " +diagnostic.RawText.split(" ")[2],"ig"));
+                      if (matchValue) {
+                        phrase = matchValue[0];
+                      }
+                    }
+                    else if (diagnostic.RawText.split(" ").length == 2){
+                      const matchValue = textOriginal.match(new RegExp(diagnostic.RawText.split(" ")[0] + " (.{0,100}) " +diagnostic.RawText.split(" ")[1],"ig"));
+                      if (matchValue) {
+                        phrase = matchValue[0];
+                      }
+                    }
+                    else if (diagnostic.RawText.split(" ").length == 4){
+                      const matchValue = textOriginal.match(new RegExp(diagnostic.RawText.split(" ")[0] + " (.{0,100}) " +diagnostic.RawText.split(" ")[3],"ig"));
+                      if (matchValue) {
+                        phrase = matchValue[0];
+                      }
+                    }
+                    else if (diagnostic.RawText.split(" ").length == 1){
+                      const matchValue = textOriginal.match(diagnostic.RawText);
+                      if (matchValue) {
+                        phrase = matchValue[0];
+                      }
+                    }
+                    var indexDiag = this.textAndDiagnosticList.findIndex(obj => obj.rawText == phrase);
+                    const diagnosticEncoded: Diagnostic = {code: diagnostic.CodeId, description: diagnostic.Description, similarity: diagnostic.Similarity}
+                    if (indexDiag == -1)
+                    {
+                      textHTML = textHTML.replace(phrase,"<mark>"+phrase+"</mark>");
+                      let textAndDiagnostic: TextAndDiagnostic = {rawText: phrase, diagnostics: []};
+                      textAndDiagnostic.diagnostics.push(diagnosticEncoded);
+                      this.textAndDiagnosticList.push(textAndDiagnostic);
+                    }
+                    else {
+                      this.textAndDiagnosticList[indexDiag].diagnostics.push(diagnosticEncoded)
+                    }                           
+                  })
+                  this.textUpdated = textHTML
+                  this.loading = false;
+                },
+                error: err => {
+                  this.error = true;
+                  this.loading = false;
+                }});
+              }
+            },
           error: err => {
             this.error = true;
             this.loading = false;

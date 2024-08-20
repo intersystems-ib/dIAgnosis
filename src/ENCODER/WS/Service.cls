@@ -156,24 +156,7 @@ ClassMethod AnalyzeText() As %Status
         // Creation of BS instance
         set status = ##class(Ens.Director).CreateBusinessService("ENCODER.BS.AnalyzeTextService", .instance)
         set tSC = instance.SendRequestSync("ENCODER.BP.AnalyzeTextProcess", analysisRequest, .response)
-
-        set sql = 
-            "SELECT CodeId, RawText, Description, max(Similarity) as Similarity FROM ENCODER_Object.TextMatches WHERE AnalysisId = ? GROUP BY CodeId ORDER BY Similarity DESC"
-
-		set statement = ##class(%SQL.Statement).%New()
-		$$$ThrowOnError(statement.%Prepare(sql))
-        set rs = statement.%Execute(response.AnalysisRequestId)
-
-        set array = []
-        while rs.%Next() {
-            do array.%Push({
-                    "CodeId": (rs.%Get("CodeId")),
-                    "RawText": (rs.%Get("RawText")),
-                    "Description": (rs.%Get("Description")),
-                    "Similarity": (rs.%Get("Similarity"))
-                })
-        }
-        write array.%ToJSON()
+                
         set %response.Status = ..#HTTP200OK
 
     } catch ex {
