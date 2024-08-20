@@ -65,7 +65,7 @@ export class AnalyzerComponent {
           const textData = {
             "ID": raw.id,
             "Text": textToProcess[index],
-            "Language": this.translocoService.getDefaultLang()
+            "Language": this.translocoService.getActiveLang()
           };
           this.irisService.analyzeText(textData).subscribe({next: res =>{
             if (res.length > 0){
