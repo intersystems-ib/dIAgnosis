@@ -5,7 +5,7 @@ Property RawText As %String;
 
 Property CodeId As %String;
 
-Property Description As %String;
+Property Description As %String(MAXLEN = 256);
 
 Property Similarity As %Double;
 

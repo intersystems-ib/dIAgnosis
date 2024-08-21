@@ -48,8 +48,8 @@ export class AnalyzerComponent {
     this.diagnostics = [];
     var textHTML = this.textToAnalyze?.value;
     var textOriginal = textHTML;
-    var textToProcess = this.textToAnalyze?.value.split(".");
-    var forReading = 100/(textToProcess.length-1);
+    var textToProcess = this.textToAnalyze?.value.split(".").filter(Boolean);
+    var forReading = 100/(textToProcess.length);
     this.totalReceived = 0;
     this.error = false;
     this.loading = true;
@@ -58,7 +58,7 @@ export class AnalyzerComponent {
       "Text": textOriginal
     };
     this.irisService.saveRawText(rawText).subscribe({next: raw => {
-      this.totalReceived = 5
+      this.totalReceived = (100%(textToProcess.length)) + 1;
       for (var index in textToProcess){
         if (textToProcess[index] !== "")
         {

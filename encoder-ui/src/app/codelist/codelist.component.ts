@@ -6,7 +6,7 @@ import { IrisService } from '../services/iris.service';
   templateUrl: './codelist.component.html',
   styleUrl: './codelist.component.scss'
 })
-export class CodelistComponent implements OnInit, OnChanges {
+export class CodelistComponent implements OnChanges {
 
   @Input() codeRequestId: string = "";
   @Output() newCodeEvent = new EventEmitter<any>();
@@ -26,12 +26,6 @@ export class CodelistComponent implements OnInit, OnChanges {
     if (this.codeRequestId !== "") {
       this.loadCodes();
     }
-  }
-
-  ngOnInit(): void {
-      if (this.codeRequestId !== "") {
-        this.loadCodes();
-      }
   }
   
   loadCodes(): void {

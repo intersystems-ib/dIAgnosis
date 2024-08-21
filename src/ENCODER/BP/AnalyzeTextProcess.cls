@@ -31,45 +31,39 @@ Method AnalyzeText(text As %String, analysisId As %String, language As %String) 
         
         return " ".join(lexical_tokens)
 
-    model = sentence_transformers.SentenceTransformer('/shared/model/')
-    phrases = text.split(",")
-    for textToLematize in phrases :
-        if textToLematize != "":
-            phrase = lematizeText(textToLematize)
-            result = ""
-            words = phrase.split(" ")
-            totalWords = len(words)
+    try:
+        model = sentence_transformers.SentenceTransformer('/shared/model/')
+        phrases = text.split(",")
+        sqlsentence = ""
+        for textToLematize in phrases :
+            if textToLematize != "":
+                phrase = lematizeText(textToLematize)
+                result = ""
+                words = phrase.split(" ")
+                totalWords = len(words)
 
-            i = 0
-            texts = []
-            while i + 3 <= totalWords :
-                texts.append(words[i]+" "+words[i+1]+" "+words[i+2])
-                i = i + 1
-            
-            if len(texts) == 0 :
-                texts.append(phrase)
+                i = 0
+                texts = []
+                while i + 3 <= totalWords :
+                    texts.append(words[i]+" "+words[i+1]+" "+words[i+2])
+                    i = i + 1
+                
+                if len(texts) == 0 :
+                    texts.append(phrase)
 
-            embeddings = model.encode(texts, normalize_embeddings=True)
-            embeddingList = embeddings.tolist()
-            
-            i = 0
-            for text in texts:
-                stmt = iris.sql.prepare("SELECT TOP 50 * FROM (SELECT CodeId, Description, VECTOR_DOT_PRODUCT(VectorDescription, TO_VECTOR(?, DECIMAL)) AS Similarity FROM ENCODER_Object.Codes) WHERE Similarity > 0.8 ORDER BY Similarity DESC")
-                resultSet = stmt.execute(str(embeddingList[i]))
-                df = resultSet.dataframe()
-                if (df.size > 0):
-                    for index, row in df.iterrows():
-                        textMatch = iris.cls('ENCODER.Object.TextMatches')._New()
-                        textMatch.RawText = text
-                        textMatch.CodeId = str(row['codeid'])
-                        textMatch.Description = str(row['description'])
-                        textMatch.Similarity = str(row['similarity'])
-                        textMatch.AnalysisId = analysisId
-                        status = textMatch._Save()
-                        result = result + "|"+ text+"_"+ str(row['codeid'])+":"+ str(row['description'])+":"+ str(row['similarity'])
-                i = i + 1
+                embeddings = model.encode(texts, normalize_embeddings=True)
+                embeddingList = embeddings.tolist()
+                
+                i = 0
+                for text in texts:
+                    sqlsentence = "INSERT INTO ENCODER_Object.TextMatches (CodeId, Description, Similarity, AnalysisId, RawText) SELECT TOP 50 * FROM (SELECT CodeId, Description, VECTOR_DOT_PRODUCT(VectorDescription, TO_VECTOR('"+str(embeddingList[i])+"', DECIMAL)) AS Similarity, '"+analysisId+"', '"+text+"' FROM ENCODER_Object.Codes) WHERE Similarity > 0.8 ORDER BY Similarity DESC"
+                    utils = iris.cls("ENCODER.Utils.Manager").ExecuteInsertQuery(sqlsentence)
+                    
+                    i = i + 1
+    except Exception as err:
+        return repr(err)
 
-    return result
+    return "Success"
 }
 
 Storage Default

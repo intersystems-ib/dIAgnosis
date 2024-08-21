@@ -1,6 +1,25 @@
 Class ENCODER.Utils.Manager Extends %RegisteredObject
 {
 
+/// Description
+ClassMethod ExecuteInsertQuery(sqlQuery As %String) As %String
+{
+    Try {
+        set statement = ##class(%SQL.Statement).%New()
+        set status = statement.%Prepare(sqlQuery)
+        if ($$$ISOK(status)) {
+            set result = statement.%Execute()
+            return result.%SQLCODE
+        }
+        else {
+            return "0"
+        }
+    }
+    Catch (ex) {
+        return "0"
+    }
+}
+
 ClassMethod GetEncoding(sentence As %String) As %String [ Language = python ]
 {
         import sentence_transformers
