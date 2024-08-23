@@ -16,8 +16,7 @@ Method AnalyzeText(text As %String, analysisId As %String, language As %String) 
     import iris
     import spacy
 
-    def lematizeText(textToLematize):        
-
+    try:
         lematize = ''
         if language == 'es':
             lematize = 'es_core_news_sm'
@@ -25,40 +24,34 @@ Method AnalyzeText(text As %String, analysisId As %String, language As %String) 
             lematize = 'en_core_web_sm'
 
         nlp = spacy.load(lematize)
-        doc = nlp(textToLematize)
-        words = [t.orth_ for t in doc if not t.is_punct | t.is_stop]
-        lexical_tokens = [t.lower() for t in words if t.isalpha()]
-        
-        return " ".join(lexical_tokens)
 
-    try:
         model = sentence_transformers.SentenceTransformer('/shared/model/')
         phrases = text.split(",")
         sqlsentence = ""
         for textToLematize in phrases :
             if textToLematize != "":
-                phrase = lematizeText(textToLematize)
+                doc = nlp(textToLematize)
+                words = [t.orth_ for t in doc if not t.is_punct | t.is_stop]
+                lexical_tokens = [t.lower() for t in words if t.isalpha()]
+                phrase = " ".join(lexical_tokens)
                 result = ""
                 words = phrase.split(" ")
                 totalWords = len(words)
-
                 i = 0
                 texts = []
                 while i + 3 <= totalWords :
                     texts.append(words[i]+" "+words[i+1]+" "+words[i+2])
                     i = i + 1
-                
                 if len(texts) == 0 :
                     texts.append(phrase)
 
                 embeddings = model.encode(texts, normalize_embeddings=True)
                 embeddingList = embeddings.tolist()
-                
                 i = 0
                 for text in texts:
-                    sqlsentence = "INSERT INTO ENCODER_Object.TextMatches (CodeId, Description, Similarity, AnalysisId, RawText) SELECT TOP 50 * FROM (SELECT CodeId, Description, VECTOR_DOT_PRODUCT(VectorDescription, TO_VECTOR('"+str(embeddingList[i])+"', DECIMAL)) AS Similarity, '"+analysisId+"', '"+text+"' FROM ENCODER_Object.Codes) WHERE Similarity > 0.8 ORDER BY Similarity DESC"
-                    utils = iris.cls("ENCODER.Utils.Manager").ExecuteInsertQuery(sqlsentence)
-                    
+                    sqlsentence = "INSERT INTO ENCODER_Object.TextMatches (CodeId, Description, Similarity, AnalysisId, RawText) SELECT * FROM (SELECT CodeId, Description, VECTOR_DOT_PRODUCT(VectorDescription, TO_VECTOR('"+str(embeddingList[i])+"', DECIMAL)) AS Similarity, '"+analysisId+"', '"+text+"' FROM ENCODER_Object.Codes) WHERE Similarity > 0.8"
+                     #iris.cls("Ens.Util.Log").LogInfo("ENCODER.BP.AnalyzeTextProcess", "AnalyzeText", sqlsentence)
+                    iris.cls("ENCODER.Utils.Manager").ExecuteInsertQuery(sqlsentence)
                     i = i + 1
     except Exception as err:
         return repr(err)

@@ -7,7 +7,7 @@ Property CodeId As %String;
 
 Property Description As %String(MAXLEN = 256);
 
-Property Similarity As %Double;
+Property Similarity As %Double(STORAGEDEFAULT = "columnar");
 
 Property AnalysisId As %Integer;
 
@@ -29,11 +29,12 @@ Storage Default
 <Value>Description</Value>
 </Value>
 <Value name="5">
-<Value>Similarity</Value>
-</Value>
-<Value name="6">
 <Value>AnalysisId</Value>
 </Value>
+</Data>
+<Data name="_CDM_Similarity">
+<Attribute>Similarity</Attribute>
+<Structure>vector</Structure>
 </Data>
 <DataLocation>^ENCODER.Object.TextMatchesD</DataLocation>
 <DefaultData>TextMatchesDefaultData</DefaultData>
