@@ -10,6 +10,7 @@ XData ProductionDefinition
     <Setting Target="Adapter" Name="FilePath">/shared/in/</Setting>
     <Setting Target="Host" Name="CodeType">CIE10</Setting>
     <Setting Target="Adapter" Name="Charset">utf-8</Setting>
+    <Setting Target="Adapter" Name="FileSpec">*.csv</Setting>
   </Item>
   <Item Name="ENCODER.BP.CodeImportProcess" Category="" ClassName="ENCODER.BP.CodeImportProcess" PoolSize="1" Enabled="true" Foreground="false" Comment="" LogTraceEvents="true" Schedule="">
   </Item>
@@ -19,6 +20,7 @@ XData ProductionDefinition
     <Setting Target="Host" Name="TargetConfigNames">ENCODER.BP.HL7ToCodeBPL</Setting>
     <Setting Target="Adapter" Name="Charset">utf-8</Setting>
     <Setting Target="Host" Name="DefCharEncoding">utf-8</Setting>
+    <Setting Target="Adapter" Name="FileSpec">*.hl7</Setting>
   </Item>
   <Item Name="ENCODER.BP.HL7ToCodeBPL" Category="" ClassName="ENCODER.BP.HL7ToCodeBPL" PoolSize="1" Enabled="true" Foreground="false" Comment="" LogTraceEvents="false" Schedule="">
   </Item>
