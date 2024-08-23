@@ -8,7 +8,7 @@ interface Diagnostic {
 }
 
 interface TextAndDiagnostic {
-  rawText: String;
+  rawText: string;
   diagnostics: Array<Diagnostic>;
 }
 
@@ -25,7 +25,7 @@ interface AnalysisText {
 })
 export class AnalysisComponent implements OnInit{
 
-  textUpdated = "";
+  textUpdated: String = "";
   diagnostics: Array<any> = [];
   loading = false;
   loadingMain = false;
@@ -38,6 +38,7 @@ export class AnalysisComponent implements OnInit{
   collectionSize = 0;
   textOriginal: string = "";
   screenHeight: number = 0;
+  textToMark: String = "";
 
   constructor(private irisService: IrisService) 
   {
@@ -83,6 +84,7 @@ export class AnalysisComponent implements OnInit{
     this.diagnostics = [];
     this.textAndDiagnosticList = [];
     var textHTML = textSelected;
+    this.textToMark = textSelected;
     this.loading = true;
     this.irisService.getAnalysisDetails(idAnalysis).subscribe({next: res => {
     if (res.length > 0){
@@ -118,7 +120,6 @@ export class AnalysisComponent implements OnInit{
         const diagnosticEncoded: Diagnostic = {code: diagnostic.CodeId, description: diagnostic.Description, similarity: diagnostic.Similarity}
         if (indexDiag == -1)
         {
-          textHTML = textHTML.replace(phrase,"<mark>"+phrase+"</mark>");
           let textAndDiagnostic: TextAndDiagnostic = {rawText: phrase, diagnostics: []};
           textAndDiagnostic.diagnostics.push(diagnosticEncoded);
           this.textAndDiagnosticList.push(textAndDiagnostic);
@@ -130,5 +131,20 @@ export class AnalysisComponent implements OnInit{
       this.textUpdated = textHTML
       this.loading = false;
     }})
+  }
+
+  markDiagnosis(text: string) {
+    var textHTML = this.textToMark;
+    textHTML = textHTML.replace("<mark>","");
+    textHTML = textHTML.replace("</mark>","");
+    textHTML = textHTML.replace(text,"<mark>"+text+"</mark>");
+    this.textUpdated = textHTML;
+  }
+
+  unmarkDiagnosis() {
+    var textHTML = this.textToMark;
+    textHTML = textHTML.replace("<mark>","");
+    textHTML = textHTML.replace("</mark>","");
+    this.textUpdated = textHTML;
   }
 }

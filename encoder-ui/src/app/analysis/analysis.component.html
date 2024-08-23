@@ -90,7 +90,7 @@
                         <tbody>                                            
                         @for (textAndDiagnostic of textAndDiagnosticList; track $index) {                                                    
                             @for (diagnostic of textAndDiagnostic.diagnostics; track diagnostic; let i = $index) {
-                                <tr>
+                                <tr (mouseover)="markDiagnosis(textAndDiagnostic.rawText)" (mouseout)="unmarkDiagnosis()">
                                     <td>{{textAndDiagnostic.rawText}}</td>
                                     <td>					
                                         {{ diagnostic.code }}

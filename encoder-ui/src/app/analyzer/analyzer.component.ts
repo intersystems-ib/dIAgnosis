@@ -104,7 +104,6 @@ export class AnalyzerComponent {
                     const diagnosticEncoded: Diagnostic = {code: diagnostic.CodeId, description: diagnostic.Description, similarity: diagnostic.Similarity}
                     if (indexDiag == -1)
                     {
-                      textHTML = textHTML.replace(phrase,"<mark>"+phrase+"</mark>");
                       let textAndDiagnostic: TextAndDiagnostic = {rawText: phrase, diagnostics: []};
                       textAndDiagnostic.diagnostics.push(diagnosticEncoded);
                       this.textAndDiagnosticList.push(textAndDiagnostic);
@@ -134,9 +133,24 @@ export class AnalyzerComponent {
       this.error = true;
       this.loading = false;
     }});  
-}
+  }
+
+  markDiagnosis(text: String) {
+    var textHTML = this.textToAnalyze?.value;
+    textHTML = textHTML.replace("<mark>","");
+    textHTML = textHTML.replace("</mark>","");
+    textHTML = textHTML.replace(text,"<mark>"+text+"</mark>");
+    this.textUpdated = textHTML;
+  }
 
   createAlert() {
     alert("Es un diagnóstico");
+  }
+
+  unmarkDiagnosis() {
+    var textHTML = this.textToAnalyze?.value;
+    textHTML = textHTML.replace("<mark>","");
+    textHTML = textHTML.replace("</mark>","");
+    this.textUpdated = textHTML;
   }
 }
