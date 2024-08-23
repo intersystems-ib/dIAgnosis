@@ -85,6 +85,8 @@ export class AnalysisComponent implements OnInit{
     var textHTML = textSelected;
     this.textToMark = textSelected;
     this.loading = true;
+    var regex = /[.,;:¿?!¡]/g;
+
     this.irisService.getAnalysisDetails(idAnalysis).subscribe({next: res => {
     if (res.length > 0){
       this.diagnostics = this.diagnostics.concat(res);
@@ -92,25 +94,25 @@ export class AnalysisComponent implements OnInit{
     this.diagnostics.forEach((diagnostic, indexDiag) => {              
         let phrase: string = "";
         if (diagnostic.RawText.split(" ").length == 3){
-          const matchValue = textSelected.match(new RegExp(diagnostic.RawText.split(" ")[0] + " (.{0,100}) " +diagnostic.RawText.split(" ")[2],"ig"));
+          const matchValue = textSelected.toLowerCase().replace(regex,"").match(new RegExp(diagnostic.RawText.split(" ")[0] + "(.{0,100})" +diagnostic.RawText.split(" ")[2],"ig"));
           if (matchValue) {
             phrase = matchValue[0];
           }
         }
         else if (diagnostic.RawText.split(" ").length == 2){
-          const matchValue = textSelected.match(new RegExp(diagnostic.RawText.split(" ")[0] + " (.{0,100}) " +diagnostic.RawText.split(" ")[1],"ig"));
+          const matchValue = textSelected.toLowerCase().replace(regex,"").match(new RegExp(diagnostic.RawText.split(" ")[0] + "(.{0,100})" +diagnostic.RawText.split(" ")[1],"ig"));
           if (matchValue) {
             phrase = matchValue[0];
           }
         }
         else if (diagnostic.RawText.split(" ").length == 4){
-          const matchValue = textSelected.match(new RegExp(diagnostic.RawText.split(" ")[0] + " (.{0,100}) " +diagnostic.RawText.split(" ")[3],"ig"));
+          const matchValue = textSelected.toLowerCase().replace(regex,"").match(new RegExp(diagnostic.RawText.split(" ")[0] + "(.{0,100})" +diagnostic.RawText.split(" ")[3],"ig"));
           if (matchValue) {
             phrase = matchValue[0];
           }
         }
         else if (diagnostic.RawText.split(" ").length == 1){
-          const matchValue = textSelected.match(diagnostic.RawText);
+          const matchValue = textSelected.toLowerCase().replace(regex,"").match(diagnostic.RawText);
           if (matchValue) {
             phrase = matchValue[0];
           }

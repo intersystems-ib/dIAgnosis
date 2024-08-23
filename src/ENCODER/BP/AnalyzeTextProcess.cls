@@ -35,14 +35,13 @@ Method AnalyzeText(text As %String, analysisId As %String, language As %String) 
                 lexical_tokens = [t.lower() for t in words if t.isalpha()]
                 phrase = " ".join(lexical_tokens)
                 result = ""
-                words = phrase.split(" ")
-                totalWords = len(words)
+                totalWords = len(lexical_tokens)
                 i = 0
                 texts = []
                 while i + 3 <= totalWords :
-                    texts.append(words[i]+" "+words[i+1]+" "+words[i+2])
+                    texts.append(lexical_tokens[i]+" "+lexical_tokens[i+1]+" "+lexical_tokens[i+2])
                     i = i + 1
-                if len(texts) == 0 :
+                if totalWords < 3 :
                     texts.append(phrase)
 
                 embeddings = model.encode(texts, normalize_embeddings=True)
