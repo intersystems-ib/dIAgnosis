@@ -80,7 +80,6 @@ export class AnalysisComponent implements OnInit{
 	}
 
   analysisSelected(idAnalysis: string, textSelected: string) {
-    this.analysisResult = [];
     this.diagnostics = [];
     this.textAndDiagnosticList = [];
     var textHTML = textSelected;
