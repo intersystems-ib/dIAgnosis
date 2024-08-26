@@ -94,25 +94,25 @@ export class AnalysisComponent implements OnInit{
     this.diagnostics.forEach((diagnostic, indexDiag) => {              
         let phrase: string = "";
         if (diagnostic.RawText.split(" ").length == 3){
-          const matchValue = textSelected.toLowerCase().replace(regex,"").match(new RegExp(diagnostic.RawText.split(" ")[0] + "(.{0,100})" +diagnostic.RawText.split(" ")[2],"ig"));
+          const matchValue = textSelected.toLowerCase().replace(regex,"").match(new RegExp(diagnostic.RawText.split(" ")[0] + "(.{0,100})" +diagnostic.RawText.split(" ")[2],"gi"));
           if (matchValue) {
             phrase = matchValue[0];
           }
         }
         else if (diagnostic.RawText.split(" ").length == 2){
-          const matchValue = textSelected.toLowerCase().replace(regex,"").match(new RegExp(diagnostic.RawText.split(" ")[0] + "(.{0,100})" +diagnostic.RawText.split(" ")[1],"ig"));
+          const matchValue = textSelected.toLowerCase().replace(regex,"").match(new RegExp(diagnostic.RawText.split(" ")[0] + "(.{0,100})" +diagnostic.RawText.split(" ")[1],"gi"));
           if (matchValue) {
             phrase = matchValue[0];
           }
         }
         else if (diagnostic.RawText.split(" ").length == 4){
-          const matchValue = textSelected.toLowerCase().replace(regex,"").match(new RegExp(diagnostic.RawText.split(" ")[0] + "(.{0,100})" +diagnostic.RawText.split(" ")[3],"ig"));
+          const matchValue = textSelected.toLowerCase().replace(regex,"").match(new RegExp(diagnostic.RawText.split(" ")[0] + "(.{0,100})" +diagnostic.RawText.split(" ")[3],"gi"));
           if (matchValue) {
             phrase = matchValue[0];
           }
         }
         else if (diagnostic.RawText.split(" ").length == 1){
-          const matchValue = textSelected.toLowerCase().replace(regex,"").match(diagnostic.RawText);
+          const matchValue = textSelected.toLowerCase().replace(regex,"").match(new RegExp(diagnostic.RawText,"gi"));
           if (matchValue) {
             phrase = matchValue[0];
           }
@@ -135,10 +135,12 @@ export class AnalysisComponent implements OnInit{
   }
 
   markDiagnosis(text: string) {
+    this.unmarkDiagnosis();
     var textHTML = this.textToMark;
-    textHTML = textHTML.replace("<mark>","");
-    textHTML = textHTML.replace("</mark>","");
-    textHTML = textHTML.replace(text,"<mark>"+text+"</mark>");
+    const matchPhrase = this.textToMark.match(new RegExp(text,"ig"))
+    if (matchPhrase){
+      textHTML = textHTML.replace(matchPhrase[0],"<mark>"+matchPhrase[0]+"</mark>");
+    }      
     this.textUpdated = textHTML;
   }
 
