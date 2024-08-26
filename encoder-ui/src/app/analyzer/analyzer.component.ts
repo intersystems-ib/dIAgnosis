@@ -77,24 +77,13 @@ export class AnalyzerComponent {
                 }
                 this.diagnostics.forEach((diagnostic, indexDiag) => {              
                     let phrase: string = "";
-                    if (diagnostic.RawText.split(" ").length == 3){
-                      const matchValue = textOriginal.toLowerCase().replace(regex,"").match(new RegExp(diagnostic.RawText.split(" ")[0] + "(.{0,100})" +diagnostic.RawText.split(" ")[2],"gi"));
+                    const arrayRawText = diagnostic.RawText.split(" ")
+                    if (arrayRawText.length > 1){
+                      const matchValue = textOriginal.toLowerCase().replace(regex,"").match(new RegExp(arrayRawText[0] + "(.{0,100})" +arrayRawText[arrayRawText.length-1],"gi"));
                       if (matchValue) {
                         phrase = matchValue[0];
-                      }
-                    }
-                    else if (diagnostic.RawText.split(" ").length == 2){
-                      const matchValue = textOriginal.toLowerCase().replace(regex,"").match(new RegExp(diagnostic.RawText.split(" ")[0] + "(.{0,100})" +diagnostic.RawText.split(" ")[1],"gi"));
-                      if (matchValue) {
-                        phrase = matchValue[0];
-                      }
-                    }
-                    else if (diagnostic.RawText.split(" ").length == 4){
-                      const matchValue = textOriginal.toLowerCase().replace(regex,"").match(new RegExp(diagnostic.RawText.split(" ")[0] + "(.{0,100})" +diagnostic.RawText.split(" ")[3],"gi"));
-                      if (matchValue) {
-                        phrase = matchValue[0];
-                      }
-                    }
+                      }  
+                    }                  
                     else if (diagnostic.RawText.split(" ").length == 1){
                       const matchValue = textOriginal.toLowerCase().replace(regex,"").match(new RegExp(diagnostic.RawText, "gi"));
                       if (matchValue) {
@@ -137,12 +126,28 @@ export class AnalyzerComponent {
   }
 
   markDiagnosis(text: String) {
+    var regex = /[.,;:¿?!¡\(\)-]/g;
     this.unmarkDiagnosis();
     var textHTML = this.textToAnalyze?.value;
-    const matchPhrase = this.textToAnalyze?.value.match(new RegExp(text+"/ig"))
-    if (matchPhrase){
-      textHTML = textHTML.replace(matchPhrase[0],"<mark>"+matchPhrase[0]+"</mark>");
-    }      
+    var phrase = "";
+    var indexInit = 0;
+
+    if (text.split(" ").length > 1){
+      const matchValue = new RegExp(text.split(" ")[0].replace(regex," ") + "(.{0,100})" +text.split(" ")[text.split(" ").length-1].replace(regex," "),"gi").exec(textHTML.toLowerCase().replace(regex," "));
+      if (matchValue) {
+        phrase = matchValue[0];
+        indexInit = matchValue.index;
+      }
+    }    
+    else if (text.split(" ").length == 1){
+      const matchValue = new RegExp(text.replace(regex," "),"gi").exec(textHTML.toLowerCase().replace(regex," "));
+      if (matchValue) {
+        phrase = matchValue[0];
+        indexInit = matchValue.index;
+      }
+    }
+
+    textHTML = textHTML.replace(textHTML.substring(indexInit,indexInit+phrase.length), "<mark>"+textHTML.substring(indexInit,indexInit+phrase.length)+"</mark>");
     this.textUpdated = textHTML;
   }
 
