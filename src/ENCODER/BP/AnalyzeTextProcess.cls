@@ -48,9 +48,12 @@ Method AnalyzeText(text As %String, analysisId As %String, language As %String) 
                 embeddingList = embeddings.tolist()
                 i = 0
                 for text in texts:
+                    iris.cls("Ens.Util.Log").LogInfo("ENCODER.BP.AnalyzeTextProcess", "AnalyzeText", text)
                     sqlsentence = "INSERT INTO ENCODER_Object.TextMatches (CodeId, Description, Similarity, AnalysisId, RawText) SELECT * FROM (SELECT CodeId, Description, VECTOR_DOT_PRODUCT(VectorDescription, TO_VECTOR('"+str(embeddingList[i])+"', DECIMAL)) AS Similarity, '"+analysisId+"', '"+text+"' FROM ENCODER_Object.Codes) WHERE Similarity > 0.8"
                      #iris.cls("Ens.Util.Log").LogInfo("ENCODER.BP.AnalyzeTextProcess", "AnalyzeText", sqlsentence)
                     iris.cls("ENCODER.Utils.Manager").ExecuteInsertQuery(sqlsentence)
+                    iris.cls("Ens.Util.Log").LogInfo("ENCODER.BP.AnalyzeTextProcess", "AnalyzeText", "Sentence finished")
+                    
                     i = i + 1
     except Exception as err:
         return repr(err)
