@@ -23,7 +23,7 @@
                         @for (row of analysis; track row){
                             <tr (click)="analysisSelected(row.Id, row.RawText)">
                                 <td>{{row.Id}}</td>
-                                <td>{{row.RawText | truncate:[100,'...']}}</td>
+                                <td>{{row.RawText | truncate:[150,'...']}}</td>
                                 <td>{{row.AnalysisDate}}</td>
                             </tr>
                         }

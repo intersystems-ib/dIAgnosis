@@ -2,10 +2,10 @@
 
 /* Importing Bootstrap SCSS file. */
 @import 'bootstrap/scss/bootstrap';
-@import url('https://fonts.cdnfonts.com/css/lucida-sans');
+@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap');
 
 * {
-    font-family: Lucida Sans Typewriter;
+    font-family: 'Nunito', sans-serif;
 }
 
 html, body {
