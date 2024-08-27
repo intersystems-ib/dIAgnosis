@@ -49,7 +49,11 @@ export class AnalyzerComponent {
     var textHTML = this.textToAnalyze?.value;
     var textOriginal = textHTML;
     var textToProcess = this.textToAnalyze?.value.split(".").filter(Boolean);
-    var forReading = 100/(textToProcess.length);
+    var piecedTextToProcess: any[] = [];
+    for (var index in textToProcess){
+      piecedTextToProcess = piecedTextToProcess.concat(textToProcess[index].split(","))
+    }
+    var forReading = 100/(piecedTextToProcess.length);
     this.totalReceived = 0;
     this.error = false;
     this.loading = true;
@@ -59,13 +63,13 @@ export class AnalyzerComponent {
       "Text": textOriginal
     };
     this.irisService.saveRawText(rawText).subscribe({next: raw => {
-      this.totalReceived = (100%(textToProcess.length)) + 1;
-      for (var index in textToProcess){
-        if (textToProcess[index] !== "")
+      this.totalReceived = (100%(piecedTextToProcess.length)) + 1;
+      for (var index in piecedTextToProcess){
+        if (piecedTextToProcess[index] !== "")
         {
           const textData = {
             "ID": raw.id,
-            "Text": textToProcess[index],
+            "Text": piecedTextToProcess[index],
             "Language": this.translocoService.getActiveLang()
           };
           this.irisService.analyzeText(textData).subscribe({next: resp =>{
