@@ -5,6 +5,13 @@ WORKDIR /app
 COPY /encoder-ui .
 
 RUN npm install
-RUN npm run build
+RUN node node_modules/@angular/cli/bin/ng build --configuration production
 
-CMD ["npm", "start", "--", "--host", "0.0.0.0", "--poll", "500"]
+FROM nginx
+COPY --from=builder ./app/dist/encoder-ui/ /usr/share/nginx/html
+
+COPY /encoder-ui/cert/encoder_ui.crt /etc/nginx/ssl/encoder_ui.crt
+COPY /encoder-ui/cert/encoder_ui.key /etc/nginx/ssl/encoder_ui.key
+
+COPY /encoder-ui/nginx.conf /etc/nginx/nginx.conf
+EXPOSE 80 443

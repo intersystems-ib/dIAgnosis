@@ -27,15 +27,29 @@ USER irisowner
 WORKDIR /opt/irisapp
 COPY --chown=irisowner:irisowner src src
 
+COPY --chown=$ISC_PACKAGE_MGRUSER:$ISC_PACKAGE_IRISGROUP /iris/certificates /certificates
+RUN chmod +x /certificates
+
 COPY --chown=$ISC_PACKAGE_MGRUSER:$ISC_PACKAGE_IRISGROUP /iris/irissession.sh /
 RUN chmod +x /irissession.sh
+
+COPY --chown=$ISC_PACKAGE_MGRUSER:$ISC_PACKAGE_IRISGROUP /iris/DemoSetup.Utilities.cls . 
+RUN chmod +x /opt/irisapp/DemoSetup.Utilities.cls
 
 SHELL ["/irissession.sh"]
 
 RUN \
+  zn "%SYS" \
+  do ##class(SYS.Container).QuiesceForBundling() \
+  do ##class(Security.Users).UnExpireUserPasswords("*") \
   zn "USER" \
+  set sc=##class(%SYSTEM.OBJ).Load("/opt/irisapp/DemoSetup.Utilities.cls","ck") \
+  set helper=##class(DemoSetup.Utilities).%New() \ 
+  do helper.EnableSSLSuperServer() \
   set sc = $SYSTEM.OBJ.LoadDir("/opt/irisapp/src/Installer", "ck", , 1) \
-  if sc do ##class(Installer.Installer).Install() \
+  if sc do ##class(Installer.Installer).Install()
+
+RUN \
   zn "ENCODER" \
   set sc = $SYSTEM.OBJ.LoadDir("/opt/irisapp/src/ENCODER", "ck", , 1) \
   set production = "ENCODER.Production" \

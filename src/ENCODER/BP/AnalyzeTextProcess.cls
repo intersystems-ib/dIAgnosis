@@ -22,12 +22,14 @@ Method AnalyzeText(text As %String, analysisId As %String, language As %String) 
             lematize = 'es_core_news_sm'
         else:
             lematize = 'en_core_web_sm'
-
+        
+        iris.cls("Ens.Util.Log").LogInfo("ENCODER.BP.AnalyzeTextProcess", "AnalyzeText", "Loading lematizer")
         nlp = spacy.load(lematize)
 
-        model = sentence_transformers.SentenceTransformer('/shared/model/')
+        model = sentence_transformers.SentenceTransformer('/iris-shared/model/')
         phrases = text.split(",")
         sqlsentence = ""
+        iris.cls("Ens.Util.Log").LogInfo("ENCODER.BP.AnalyzeTextProcess", "AnalyzeText", "Starting process")
         for textToLematize in phrases :
             if textToLematize != "":
                 doc = nlp(textToLematize)

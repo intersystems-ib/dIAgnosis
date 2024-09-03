@@ -1,6 +1,6 @@
 {
-    "/api/*": {
-      "target": "http://iris:52773",
+    "/encoder/*": {
+      "target": "https://webgateway:8443",
       "secure": false,
       "logLevel": "debug"
     }

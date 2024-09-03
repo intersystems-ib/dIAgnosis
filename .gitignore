@@ -1,12 +1,12 @@
-shared/durable
-shared/model/*
-!shared/model/.gitkeep
-shared/HL7Out/*
-!shared/HL7Out/.gitkeep
-shared/in/*
-!shared/in/.gitkeep
-shared/HL7In/*
-!shared/HL7In/.gitkeep
+iris/shared/durable
+iris/shared/model/*
+!iris/shared/model/.gitkeep
+iris/shared/HL7Out/*
+!iris/shared/HL7Out/.gitkeep
+iris/shared/in/*
+!iris/shared/in/.gitkeep
+iris/shared/HL7In/*
+!iris/shared/HL7In/.gitkeep
 settings.json
 # Compiled output
 encoder-ui/dist
@@ -48,4 +48,3 @@ encoder-ui/typings
 # System files
 encoder-ui/.DS_Store
 encoder-ui/Thumbs.db
-shared/in/cie10.csv

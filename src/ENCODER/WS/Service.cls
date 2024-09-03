@@ -282,7 +282,7 @@ ClassMethod SaveCodeFile() As %Status
         set dynamicStream = dynamicBody.%Get("File",,"stream<base64")
         
         set stream=##class(%Stream.FileBinary).%New()
-        set sc=stream.LinkToFile("/shared/in/codes.csv")
+        set sc=stream.LinkToFile("/iris-shared/in/codes.csv")
         set sc=stream.CopyFromAndSave(dynamicStream)
         HANG 5
         set %response.Status = ..#HTTP200OK

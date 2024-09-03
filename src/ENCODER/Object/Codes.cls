@@ -15,7 +15,7 @@ ClassMethod GetEncoding(sentence As %String) As %String [ Language = python, Sql
 {
     import sentence_transformers
     # create the model and form the embeddings
-    model = sentence_transformers.SentenceTransformer('/shared/model/')
+    model = sentence_transformers.SentenceTransformer('/iris-shared/model/')
     embeddings = model.encode(sentence, normalize_embeddings=True).tolist() # Convert search phrase into a vector
     # convert the embeddings to a string
     return str(embeddings)
