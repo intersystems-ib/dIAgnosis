@@ -48,3 +48,4 @@ encoder-ui/typings
 # System files
 encoder-ui/.DS_Store
 encoder-ui/Thumbs.db
+webgateway/shared/durable/webgateway/CSP.log
