@@ -56,8 +56,6 @@ Method EnableSSLSuperServer(password="")
         Write !, $system.Status.GetErrorText(sc)
     }
     Write !, "Done enabling SSL for the SuperServer"
-    set p("SSLSuperServer") = 1
-    set sc = ##class(Security.System).Modify("SYSTEM", .p)
 }
 
 }
