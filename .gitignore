@@ -49,3 +49,5 @@ encoder-ui/typings
 encoder-ui/.DS_Store
 encoder-ui/Thumbs.db
 webgateway/shared/durable/webgateway/CSP.log
+webgateway/shared/CA_Server.srl
+webgateway/shared/durable/webgateway/CSP.log
