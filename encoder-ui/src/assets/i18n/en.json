@@ -37,5 +37,6 @@
     "DIAG-5": "Typhoid meningitis",
     "IMPORTED-RECORDS": "Imported records",
     "VECTORIZED-RECORDS": "Vectorized records",
-    "SIMILARITIES": "Similarities found for"
+    "SIMILARITIES": "Similarities found for",
+    "MATCHES": "Matches"
 }

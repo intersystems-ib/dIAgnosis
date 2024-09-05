@@ -37,5 +37,6 @@
     "DIAG-5": "Meningitis tifoidea",
     "IMPORTED-RECORDS": "Registros importados",
     "VECTORIZED-RECORDS": "Registros vectorizados",
-    "SIMILARITIES": "Similitudes encontradas para"
+    "SIMILARITIES": "Similitudes encontradas para",
+    "MATCHES": "Coincidencias"
 }

@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, inject, TemplateRef } from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { IrisService } from '../services/iris.service';
 import { TranslocoService } from '@ngneat/transloco';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 interface Diagnostic {
   code: String;
@@ -22,12 +23,15 @@ interface TextAndDiagnostic {
 
 export class AnalyzerComponent {
 
+  private modalService = inject(NgbModal);
   textUpdated = "";
   diagnostics: Array<any> = [];
   loading = false;
   error = false;
   totalReceived = 0;
   textAndDiagnosticList: Array<TextAndDiagnostic> = [];
+  diagnosticsSelected: Array<Diagnostic> = [];
+  diagnosticText: String = "";
 
   constructor(private irisService: IrisService,
     private translocoService: TranslocoService
@@ -161,4 +165,16 @@ export class AnalyzerComponent {
     textHTML = textHTML.replace("</mark>","");
     this.textUpdated = textHTML;
   }
+
+  open(content: TemplateRef<any>, textAndDiagnostic: TextAndDiagnostic) {
+    this.diagnosticText = textAndDiagnostic.rawText;
+    this.diagnosticsSelected = textAndDiagnostic.diagnostics;
+		this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', size: 'xl' }).result.then(
+			(result) => {
+			},
+			(reason) => {
+
+			},
+		);
+	}
 }

@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit, TemplateRef } from '@angular/core';
 import { IrisService } from '../services/iris.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 interface Diagnostic {
   code: String;
@@ -25,6 +26,7 @@ interface AnalysisText {
 })
 export class AnalysisComponent implements OnInit{
 
+  private modalService = inject(NgbModal);
   textUpdated: String = "";
   diagnostics: Array<any> = [];
   loading = false;
@@ -39,6 +41,8 @@ export class AnalysisComponent implements OnInit{
   textOriginal: string = "";
   screenHeight: number = 0;
   textToMark: String = "";
+  diagnosticsSelected: Array<Diagnostic> = [];
+  diagnosticText: String = "";
 
   constructor(private irisService: IrisService) 
   {
@@ -155,4 +159,16 @@ export class AnalysisComponent implements OnInit{
     textHTML = textHTML.replace("</mark>","");
     this.textUpdated = textHTML;
   }
+
+  open(content: TemplateRef<any>, textAndDiagnostic: TextAndDiagnostic) {
+    this.diagnosticText = textAndDiagnostic.rawText;
+    this.diagnosticsSelected = textAndDiagnostic.diagnostics;
+		this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', size: 'xl' }).result.then(
+			(result) => {
+			},
+			(reason) => {
+
+			},
+		);
+	}
 }

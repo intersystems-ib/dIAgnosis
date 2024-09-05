@@ -44,7 +44,7 @@
         </div>
     </div>
     <div class="row h-50">        
-        <div class="col-6">
+        <div class="col-7">
             <div class="p-4 h-100">
                 <label class="font-weight-bold">{{'FINDINGS' | transloco}}:</label>
                 @if (loading && !error) {
@@ -56,7 +56,7 @@
                 </div>    
                 }
                 @if (!loading && !error) {
-                <div class="h-100 w-100 border text-section">
+                <div class="p-2 h-100 w-100 border text-section">
                     <span class="h-100" [innerHTML]="textUpdated"></span>
                 </div>
                 }
@@ -67,7 +67,7 @@
                 }
             </div>
         </div>
-        <div class="col-6">
+        <div class="col-5">
             <div class="p-4 h-100">
                 <label class="font-weight-bold">{{'POSSIBLE-DIAGNOSES' | transloco}}:</label>
                 <div class="h-100 w-100 border text-section">
@@ -82,31 +82,24 @@
                         <thead>
                             <tr>
                                 <th scope="col">{{'TEXT' | transloco}}</th>
-                                <th scope="col">{{'CODE' | transloco}}</th>
-                                <th scope="col">{{'DESCRIPTION' | transloco}}</th>
-                                <th scope="col">{{'SIMILARITY' | transloco}}</th>
+                                <th scope="col">{{'MATCHES' | transloco}}</th>
+                                <th scope="col">{{'ACTION' | transloco}}</th>
                             </tr>
                         </thead>
                         <tbody>                                            
                         @for (textAndDiagnostic of textAndDiagnosticList; track $index) {                                                    
-                            @for (diagnostic of textAndDiagnostic.diagnostics; track diagnostic; let i = $index) {
-                                <tr (mouseover)="markDiagnosis(textAndDiagnostic.rawText)" (mouseout)="unmarkDiagnosis()">
-                                    <td>{{textAndDiagnostic.rawText}}</td>
-                                    <td>					
-                                        {{ diagnostic.code }}
-                                    </td>
-                                    <td>					
-                                        {{ diagnostic.description }}
-                                    </td>
-                                    <td [ngClass]="{'similarity-veryhigh': diagnostic.similarity >= .8 ,
-                                        'similarity-high': diagnostic.similarity < .8 && diagnostic.similarity >= .7,
-                                        'similarity-medium': diagnostic.similarity < .7 && diagnostic.similarity >= .6,
-                                        'similarity-low': diagnostic.similarity < .6 }">
-                                        {{ diagnostic.similarity }}
-                                    </td>
-                                </tr>
-                            }
-                        }                        
+                            <tr (mouseover)="markDiagnosis(textAndDiagnostic.rawText)"  (mouseout)="unmarkDiagnosis()">
+                                <td>{{textAndDiagnostic.rawText}}</td>
+                                <td>{{textAndDiagnostic.diagnostics.length}}</td>
+                                <td>
+                                    <button type="button" class="btn btn-success" (click)="open(content, textAndDiagnostic)">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                                            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+                                        </svg>
+                                    </button>
+                                </td>
+                            </tr>
+                        }                     
                         </tbody>
                     </table>
                 }
@@ -114,4 +107,15 @@
             </div>
         </div>
     </div>
+    <ng-template #content let-modal>
+        <div class="modal-header">
+            <h4 class="modal-title" id="modal-basic-title">{{'SIMILARITIES' | transloco}}: {{diagnosticText}}</h4>
+            <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+        </div>
+        <div class="modal-body">
+            <app-matches-list [diagnostics]="diagnosticsSelected" (newCodeEvent)="modal.close('Code saved')"></app-matches-list>
+        </div>
+        <div class="modal-footer">
+        </div>
+    </ng-template>
 </div>

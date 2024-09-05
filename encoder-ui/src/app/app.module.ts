@@ -13,6 +13,7 @@ import { AnalysisComponent } from './analysis/analysis.component';
 import { FunctionsPipe } from './utils/functions.pipe';
 import { LoaderComponent } from './loader/loader.component';
 import { TranslocoRootModule } from './transloco-root.module';
+import { MatchesListComponent } from './matches-list/matches-list.component';
 
 @NgModule({
   declarations: [
@@ -22,6 +23,7 @@ import { TranslocoRootModule } from './transloco-root.module';
     AnalyzerComponent,
     AnalysisComponent,
     LoaderComponent,
+    MatchesListComponent,
     FunctionsPipe
   ],
   imports: [
