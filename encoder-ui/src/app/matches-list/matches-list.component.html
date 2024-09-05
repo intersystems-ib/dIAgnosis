@@ -1,0 +1,53 @@
+@if (loading) {
+    <div class="d-flex justify-content-center">
+        <div class="spinner-border" role="status">
+        </div>
+    </div>
+    }
+    @if (!loading) {
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">{{'ICD-CODE' | transloco}}</th>
+                <th scope="col">{{'DESCRIPTION' | transloco}}</th>
+                <th scope="col">{{'SIMILARITY' | transloco}}</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (diagnostic of diagnosticsPage; track diagnostic; let i = $index) {
+                <tr>
+                    <th scope="row">{{ i + 1 }}</th>
+                    <td>					
+                        {{ diagnostic.code }}
+                    </td>
+                    <td>					
+                        {{ diagnostic.description }}
+                    </td>
+                    <td [ngClass]="{'similarity-veryhigh': diagnostic.similarity >= .8 ,
+                        'similarity-high': diagnostic.similarity < .8 && diagnostic.similarity >= .7,
+                        'similarity-medium': diagnostic.similarity < .7 && diagnostic.similarity >= .6,
+                        'similarity-low': diagnostic.similarity < .6 }">
+                        {{ diagnostic.similarity }}
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    
+    <div class="d-flex justify-content-between p-2">
+        <ngb-pagination
+            [collectionSize]="collectionSize"
+            [(page)]="page"
+            [pageSize]="pageSize"
+            (pageChange)="refreshOptions()"
+        >
+        </ngb-pagination>
+    
+        <select class="form-select" style="width: auto" [(ngModel)]="pageSize" (ngModelChange)="refreshOptions()">
+            <option [ngValue]="6">6 {{'CODES-PAGE' | transloco}}</option>
+            <option [ngValue]="8">8 {{'CODES-PAGE' | transloco}}</option>
+            <option [ngValue]="10" selected>10 {{'CODES-PAGE' | transloco}}</option>
+        </select>
+    </div>
+    }
