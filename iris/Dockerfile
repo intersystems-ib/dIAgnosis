@@ -1,4 +1,4 @@
-ARG IMAGE=irepo.intersystems.com/intersystems/irishealth-community:latest-em
+ARG IMAGE=containers.intersystems.com/intersystems/irishealth-community:latest-preview
 FROM $IMAGE
 
 USER root
