@@ -15,11 +15,11 @@ RUN chmod 777 /requirements.txt
 COPY --chown=$ISC_PACKAGE_MGRUSER:$ISC_PACKAGE_IRISGROUP /iris/webapp.xml /
 RUN chmod +x /webapp.xml
 
-RUN pip3 install -r /requirements.txt --break-system-packages
+RUN pip3 install -r /requirements.txt
 
-RUN spacy download es_core_news_sm --break-system-packages
+RUN spacy download es_core_news_sm
 
-RUN spacy download en_core_web_sm --break-system-packages
+RUN spacy download en_core_web_sm
 
 USER irisowner
 
