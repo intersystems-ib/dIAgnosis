@@ -17,7 +17,7 @@
         <tbody>
             @for (diagnostic of diagnosticsPage; track diagnostic; let i = $index) {
                 <tr>
-                    <th scope="row">{{((page - 1)*10) + i + 1}}</th>
+                    <th scope="row">{{((page - 1)*pageSize) + i + 1}}</th>
                     <td>					
                         {{ diagnostic.code }}
                     </td>
