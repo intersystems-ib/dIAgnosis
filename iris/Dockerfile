@@ -17,9 +17,9 @@ RUN chmod +x /webapp.xml
 
 RUN pip3 install -r /requirements.txt --break-system-packages
 
-RUN spacy download es_core_news_sm --break-system-packages
+RUN spacy download es_core_news_md --break-system-packages
 
-RUN spacy download en_core_web_sm --break-system-packages
+RUN spacy download en_core_web_md --break-system-packages
 
 USER irisowner
 

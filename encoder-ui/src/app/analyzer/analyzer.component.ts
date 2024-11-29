@@ -83,26 +83,12 @@ export class AnalyzerComponent {
                 if (res.length > 0){
                   this.diagnostics = this.diagnostics.concat(res);
                 }
-                this.diagnostics.forEach((diagnostic, indexDiag) => {              
-                    let phrase: string = "";
-                    const arrayRawText = diagnostic.RawText.split(" ")
-                    if (arrayRawText.length > 1){
-                      const matchValue = textOriginal.toLowerCase().replace(regex,"").match(new RegExp(arrayRawText[0] + "(.{0,100})" +arrayRawText[arrayRawText.length-1],"gi"));
-                      if (matchValue) {
-                        phrase = matchValue[0];
-                      }  
-                    }                  
-                    else if (diagnostic.RawText.split(" ").length == 1){
-                      const matchValue = textOriginal.toLowerCase().replace(regex,"").match(new RegExp(diagnostic.RawText, "gi"));
-                      if (matchValue) {
-                        phrase = matchValue[0];
-                      }
-                    }
-                    var indexDiag = this.textAndDiagnosticList.findIndex(obj => obj.rawText == phrase);
-                    const diagnosticEncoded: Diagnostic = {code: diagnostic.CodeId, description: diagnostic.Description, similarity: diagnostic.Similarity}
+                this.diagnostics.forEach((diagnostic, indexDiag) => {
+                    var indexDiag = this.textAndDiagnosticList.findIndex(obj => obj.rawText == diagnostic.RawText);
+                    const diagnosticEncoded: Diagnostic = {code: diagnostic.CodeId, description: diagnostic.RawText, similarity: diagnostic.Similarity}
                     if (indexDiag == -1)
                     {
-                      let textAndDiagnostic: TextAndDiagnostic = {rawText: phrase, diagnostics: []};
+                      let textAndDiagnostic: TextAndDiagnostic = {rawText: diagnostic.RawText, diagnostics: []};
                       textAndDiagnostic.diagnostics.push(diagnosticEncoded);
                       this.textAndDiagnosticList.push(textAndDiagnostic);
                     }

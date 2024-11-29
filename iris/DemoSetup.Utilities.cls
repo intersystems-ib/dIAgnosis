@@ -6,21 +6,20 @@ Class DemoSetup.Utilities Extends %RegisteredObject
 {
 
 /// Directory where all SSL files for the %SuperServer configuration should be located
-Property SSLDirectory  [InitialExpression = "/certificates/"];
+Property SSLDirectory [ InitialExpression = "/certificates/" ];
 
 /// Filename for SSL Certificate Authority (CA)
-Property SSLCertAuth [InitialExpression = "CA_Server.cer"];
+Property SSLCertAuth [ InitialExpression = "CA_Server.cer" ];
 
 /// Filename for SSL Server Certificate
-Property SSLCertificate [InitialExpression = "iris_server.cer"];
+Property SSLCertificate [ InitialExpression = "iris_server.cer" ];
 
 /// Filename for SSL Private Key
-Property SSLKey [InitialExpression = "iris_server.key"];
-
+Property SSLKey [ InitialExpression = "iris_server.key" ];
 
 /// Creates a %SuperServer configuration using the above-defined properties.
 /// Takes a private key password as optional input. Default is to not use one.
-Method EnableSSLSuperServer(password="")
+Method EnableSSLSuperServer(password = "")
 {
     New $NAMESPACE
     zn "%SYS"
@@ -49,8 +48,12 @@ Method EnableSSLSuperServer(password="")
         Write !, "WARNING: Getting the system security settings failed!"
         Write !, $system.Status.GetErrorText(sc)
     }
-    set props("SSLSuperServer")=1
-    set sc=##class(Security.System).Modify("SYSTEM",.props)
+    set sc = ##class(Security.Servers).Get("1972",,.propsSuperServer)
+    set propsSuperServer("Enabled") = 1
+    set propsSuperServer("SSLSupportLevel") = 1
+    set propsSuperServer("SSLConfig") = "%SuperServer"
+    set sc = ##class(Security.Servers).Modify("1972",,.propsSuperServer)
+    
     If (sc'=1) {
         Write !, "WARNING: Modifying the system's SSLSuperServer property failed!"
         Write !, $system.Status.GetErrorText(sc)

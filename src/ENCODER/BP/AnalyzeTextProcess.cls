@@ -19,9 +19,9 @@ Method AnalyzeText(text As %String, analysisId As %String, language As %String) 
     try:
         lematize = ''
         if language == 'es':
-            lematize = 'es_core_news_sm'
+            lematize = 'es_core_news_md'
         else:
-            lematize = 'en_core_web_sm'
+            lematize = 'en_core_web_md'
         
         iris.cls("Ens.Util.Log").LogInfo("ENCODER.BP.AnalyzeTextProcess", "AnalyzeText", "Loading lematizer")
         nlp = spacy.load(lematize)
@@ -30,34 +30,34 @@ Method AnalyzeText(text As %String, analysisId As %String, language As %String) 
         phrases = text.split(",")
         sqlsentence = ""
         iris.cls("Ens.Util.Log").LogInfo("ENCODER.BP.AnalyzeTextProcess", "AnalyzeText", "Starting process")
-        for textToLematize in phrases :
-            if textToLematize != "":
-                doc = nlp(textToLematize)
-                words = [t.orth_ for t in doc if not t.is_punct | t.is_stop]
-                lexical_tokens = [t.lower() for t in words if t.isalpha()]
-                phrase = " ".join(lexical_tokens)
-                result = ""
-                totalWords = len(lexical_tokens)
-                i = 0
-                texts = []
-                while i + 3 <= totalWords :
-                    texts.append(lexical_tokens[i]+" "+lexical_tokens[i+1]+" "+lexical_tokens[i+2])
-                    i = i + 1
-                if totalWords < 3 :
-                    texts.append(phrase)
-
-                embeddings = model.encode(texts, normalize_embeddings=True)
+        for phraseToAnalyze in phrases :
+            if phraseToAnalyze != "":
+                doc = nlp(phraseToAnalyze)
+                phrase = ""
+                phrases = []
+                for token in doc:
+                    if (token.pos_ == "NOUN" or token.pos_ == "ADJ" or token.pos_ == "DET"):
+                        if phrase == "":
+                            phrase = token.text
+                        else :
+                            phrase += " "+token.text
+                    else :
+                        if phrase != "" and len(phrase.split(" ")) > 1:
+                            phrases.append(phrase)
+                        phrase = ""
+                embeddings = model.encode(phrases, normalize_embeddings=True)
                 embeddingList = embeddings.tolist()
                 i = 0
-                for text in texts:
+                for text in phrases:
                     iris.cls("Ens.Util.Log").LogInfo("ENCODER.BP.AnalyzeTextProcess", "AnalyzeText", text)
                     sqlsentence = "INSERT INTO ENCODER_Object.TextMatches (CodeId, Description, Similarity, AnalysisId, RawText) SELECT TOP 50 * FROM (SELECT CodeId, Description, VECTOR_DOT_PRODUCT(VectorDescription, TO_VECTOR('"+str(embeddingList[i])+"', DECIMAL)) AS Similarity, '"+analysisId+"', '"+text+"' FROM ENCODER_Object.Codes) WHERE Similarity > 0.6 ORDER BY Similarity DESC"
-                     #iris.cls("Ens.Util.Log").LogInfo("ENCODER.BP.AnalyzeTextProcess", "AnalyzeText", sqlsentence)
+                    iris.cls("Ens.Util.Log").LogInfo("ENCODER.BP.AnalyzeTextProcess", "AnalyzeText", sqlsentence)
                     iris.cls("ENCODER.Utils.Manager").ExecuteInsertQuery(sqlsentence)
                     iris.cls("Ens.Util.Log").LogInfo("ENCODER.BP.AnalyzeTextProcess", "AnalyzeText", "Sentence finished")
                     
                     i = i + 1
     except Exception as err:
+        iris.cls("Ens.Util.Log").LogInfo("ENCODER.BP.AnalyzeTextProcess", "AnalyzeText", repr(err))
         return repr(err)
 
     return "Success"
