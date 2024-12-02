@@ -85,7 +85,7 @@ export class AnalyzerComponent {
                 }
                 this.diagnostics.forEach((diagnostic, indexDiag) => {
                     var indexDiag = this.textAndDiagnosticList.findIndex(obj => obj.rawText == diagnostic.RawText);
-                    const diagnosticEncoded: Diagnostic = {code: diagnostic.CodeId, description: diagnostic.RawText, similarity: diagnostic.Similarity}
+                    const diagnosticEncoded: Diagnostic = {code: diagnostic.CodeId, description: diagnostic.Description, similarity: diagnostic.Similarity}
                     if (indexDiag == -1)
                     {
                       let textAndDiagnostic: TextAndDiagnostic = {rawText: diagnostic.RawText, diagnostics: []};
@@ -123,25 +123,8 @@ export class AnalyzerComponent {
     var regex = /[.,;:¿?!¡\(\)-]/g;
     this.unmarkDiagnosis();
     var textHTML = this.textToAnalyze?.value;
-    var phrase = "";
-    var indexInit = 0;
 
-    if (text.split(" ").length > 1){
-      const matchValue = new RegExp(text.split(" ")[0].replace(regex," ") + "(.{0,100})" +text.split(" ")[text.split(" ").length-1].replace(regex," "),"gi").exec(textHTML.toLowerCase().replace(regex," "));
-      if (matchValue) {
-        phrase = matchValue[0];
-        indexInit = matchValue.index;
-      }
-    }    
-    else if (text.split(" ").length == 1){
-      const matchValue = new RegExp(text.replace(regex," "),"gi").exec(textHTML.toLowerCase().replace(regex," "));
-      if (matchValue) {
-        phrase = matchValue[0];
-        indexInit = matchValue.index;
-      }
-    }
-
-    textHTML = textHTML.replace(textHTML.substring(indexInit,indexInit+phrase.length), "<mark>"+textHTML.substring(indexInit,indexInit+phrase.length)+"</mark>");
+    textHTML = textHTML.replace(text, "<mark>"+text+"</mark>");
     this.textUpdated = textHTML;
   }
 
