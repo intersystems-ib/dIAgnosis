@@ -19,7 +19,7 @@ Method AnalyzeText(text As %String, analysisId As %String, language As %String) 
     try:
         lematize = ''
         if language == 'es':
-            lematize = 'es_core_news_md'
+            lematize = 'es_dep_news_trf'
         else:
             lematize = 'en_core_web_md'
         
@@ -51,7 +51,6 @@ Method AnalyzeText(text As %String, analysisId As %String, language As %String) 
                 for text in phrases:
                     iris.cls("Ens.Util.Log").LogInfo("ENCODER.BP.AnalyzeTextProcess", "AnalyzeText", text)
                     sqlsentence = "INSERT INTO ENCODER_Object.TextMatches (CodeId, Description, Similarity, AnalysisId, RawText) SELECT TOP 50 * FROM (SELECT CodeId, Description, VECTOR_DOT_PRODUCT(VectorDescription, TO_VECTOR('"+str(embeddingList[i])+"', DECIMAL)) AS Similarity, '"+analysisId+"', '"+text+"' FROM ENCODER_Object.Codes) WHERE Similarity > 0.6 ORDER BY Similarity DESC"
-                    iris.cls("Ens.Util.Log").LogInfo("ENCODER.BP.AnalyzeTextProcess", "AnalyzeText", sqlsentence)
                     iris.cls("ENCODER.Utils.Manager").ExecuteInsertQuery(sqlsentence)
                     iris.cls("Ens.Util.Log").LogInfo("ENCODER.BP.AnalyzeTextProcess", "AnalyzeText", "Sentence finished")
                     

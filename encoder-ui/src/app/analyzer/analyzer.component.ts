@@ -61,13 +61,12 @@ export class AnalyzerComponent {
     this.totalReceived = 0;
     this.error = false;
     this.loading = true;
-    var regex = /[.,;:¿?!¡]/g;
     this.textAndDiagnosticList = [];
     const rawText = {
       "Text": textOriginal
     };
     this.irisService.saveRawText(rawText).subscribe({next: raw => {
-      this.totalReceived = (100%(piecedTextToProcess.length)) + 1;
+      this.totalReceived = 0;
       for (var index in piecedTextToProcess){
         if (piecedTextToProcess[index] !== "")
         {

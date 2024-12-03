@@ -43,7 +43,7 @@ ClassMethod LematizeText(textToLematize As %String) As %String [ Language = pyth
 {
     import spacy
 
-    nlp = spacy.load('es_core_news_md')
+    nlp = spacy.load('es_dep_news_trf')
 
     doc = nlp(textToLematize)
     words = [t.orth_ for t in doc if not t.is_punct | t.is_stop]

@@ -89,7 +89,6 @@ export class AnalysisComponent implements OnInit{
     var textHTML = textSelected;
     this.textToMark = textSelected;
     this.loading = true;
-    var regex = /[.,;:¿?!¡]/g;
 
     this.irisService.getAnalysisDetails(idAnalysis).subscribe({next: res => {
     if (res.length > 0){
