@@ -6,7 +6,7 @@ USER root
 WORKDIR /opt/irisapp
 RUN chown -R irisowner:irisowner /opt/irisapp
 
-RUN apt-get update && apt-get install -y python3
+RUN apt-get update && apt-get install -y python3 && apt-get -y install curl
 
 # install required packages
 COPY --chown=$ISC_PACKAGE_MGRUSER:$ISC_PACKAGE_IRISGROUP /requirements.txt /
