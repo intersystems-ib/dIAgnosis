@@ -14,14 +14,13 @@ Method AnalyzeText(text As %String, analysisId As %String, language As %String) 
 {
     import sentence_transformers
     import iris
-    import spacy
     import requests
 
     try:
         url = "http://ollama:11434/api/generate"
         data = {
             "model": "llama3.2",
-            "prompt": "Extrae en formato CSV el texto literal de los diagnósticos encontrados en el paciente del siguiente texto sin mostrar diagnósticos que no se observen ni para los que no hay hallazgos patológicos, devuelve únicamente el CSV, evita fórmulas de cortesía: "+text,
+            "prompt": "Extrae en formato CSV los diagnósticos encontrados en el paciente del siguiente texto sin mostrar diagnósticos que no se observen ni para los que no hay hallazgos patológicos, evita fórmulas de cortesía: "+text,
             "stream": False
         }
         response = requests.post(url, json=data)

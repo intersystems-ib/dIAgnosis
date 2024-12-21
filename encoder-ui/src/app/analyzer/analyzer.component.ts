@@ -53,7 +53,7 @@ export class AnalyzerComponent {
     var textHTML = this.textToAnalyze?.value;
     var textOriginal = textHTML;
     var textToProcess = this.textToAnalyze?.value.split(".").filter(Boolean);
-    var piecedTextToProcess: any[] = [textOriginal];
+    var piecedTextToProcess: any[] = textToProcess;
     
     var forReading = 100/(piecedTextToProcess.length);
     this.totalReceived = 0;
@@ -117,11 +117,11 @@ export class AnalyzerComponent {
   }
 
   markDiagnosis(text: String) {
-    var regex = /[.,;:¿?!¡\(\)-]/g;
+    var regEx = new RegExp(text.trim(), "ig");
     this.unmarkDiagnosis();
     var textHTML = this.textToAnalyze?.value;
 
-    textHTML = textHTML.replace(text, "<mark>"+text+"</mark>");
+    textHTML = textHTML.replace(regEx, "<mark>"+text+"</mark>");
     this.textUpdated = textHTML;
   }
 

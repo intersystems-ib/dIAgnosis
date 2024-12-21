@@ -113,13 +113,11 @@ export class AnalysisComponent implements OnInit{
   }
 
   markDiagnosis(text: string) {
-    var regex = /[.,;:¿?!¡\(\)-]/g;
+    var regEx = new RegExp(text.trim(), "ig");
     this.unmarkDiagnosis();
     var textHTML = this.textToMark;
-    var phrase = "";
-    var indexInit = 0;
 
-    textHTML = textHTML.replace(text, "<mark>"+text+"</mark>");
+    textHTML = textHTML.replace(regEx, "<mark>"+text+"</mark>");
     this.textUpdated = textHTML;
   }
 
