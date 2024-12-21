@@ -30,13 +30,12 @@ Method AnalyzeText(text As %String, analysisId As %String, language As %String) 
         model = sentence_transformers.SentenceTransformer('/iris-shared/model/')
         phrases = analyzedText['response'].replace('"',"").split(",")
         sqlsentence = ""
-        iris.cls("Ens.Util.Log").LogInfo("ENCODER.BP.AnalyzeTextProcess", "AnalyzeText", "Starting process")
+        # iris.cls("Ens.Util.Log").LogInfo("ENCODER.BP.AnalyzeTextProcess", "AnalyzeText", "Starting process")
         for phraseToAnalyze in phrases :
             if phraseToAnalyze != "":
                 embedding = model.encode(phraseToAnalyze, normalize_embeddings=True).tolist()
                 sqlsentence = "INSERT INTO ENCODER_Object.TextMatches (CodeId, Description, Similarity, AnalysisId, RawText) SELECT TOP 50 * FROM (SELECT CodeId, Description, VECTOR_DOT_PRODUCT(VectorDescription, TO_VECTOR('"+str(embedding)+"', DECIMAL)) AS Similarity, '"+analysisId+"', '"+phraseToAnalyze+"' FROM ENCODER_Object.Codes) ORDER BY Similarity DESC"                    
                 iris.cls("ENCODER.Utils.Manager").ExecuteInsertQuery(sqlsentence)
-                iris.cls("Ens.Util.Log").LogInfo("ENCODER.BP.AnalyzeTextProcess", "AnalyzeText", sqlsentence)                    
     except Exception as err:
         iris.cls("Ens.Util.Log").LogInfo("ENCODER.BP.AnalyzeTextProcess", "AnalyzeText", repr(err))
         return repr(err)
