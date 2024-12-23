@@ -27,7 +27,7 @@ Method AnalyzeText(text As %String, analysisId As %String, language As %String) 
         analyzedText = response.json()
         
         model = sentence_transformers.SentenceTransformer('/iris-shared/model/')
-        phrases = analyzedText['response'].replace('"',"").split(",")
+        phrases = analyzedText['response'].split(",")
         sqlsentence = ""
         # iris.cls("Ens.Util.Log").LogInfo("ENCODER.BP.AnalyzeTextProcess", "AnalyzeText", "Starting process")
         for phraseToAnalyze in phrases :
