@@ -31,6 +31,7 @@ Method AnalyzeText(text As %String, analysisId As %String, language As %String) 
         sqlsentence = ""
         # iris.cls("Ens.Util.Log").LogInfo("ENCODER.BP.AnalyzeTextProcess", "AnalyzeText", "Starting process")
         for phraseToAnalyze in phrases :
+            iris.cls("Ens.Util.Log").LogInfo("ENCODER.BP.AnalyzeTextProcess", "AnalyzeText", phraseToAnalyze)
             if phraseToAnalyze != "":
                 embedding = model.encode(phraseToAnalyze, normalize_embeddings=True).tolist()
                 sqlsentence = "INSERT INTO ENCODER_Object.TextMatches (CodeId, Description, Similarity, AnalysisId, RawText) SELECT TOP 50 * FROM (SELECT CodeId, Description, VECTOR_DOT_PRODUCT(VectorDescription, TO_VECTOR('"+str(embedding)+"', DECIMAL)) AS Similarity, '"+analysisId+"', '"+phraseToAnalyze+"' FROM ENCODER_Object.Codes) ORDER BY Similarity DESC"                    
