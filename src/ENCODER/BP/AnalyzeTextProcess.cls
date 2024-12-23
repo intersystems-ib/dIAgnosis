@@ -20,7 +20,7 @@ Method AnalyzeText(text As %String, analysisId As %String, language As %String) 
         url = "http://ollama:11434/api/generate"
         data = {
             "model": "llama3.2",
-            "prompt": "Extrae en formato CSV los diagnósticos en el siguiente texto sin mostrar diagnósticos que no se observen ni para los que no hay hallazgos patológicos, evita fórmulas de cortesía y notas: "+text,
+            "prompt": "Extrae únicamente los diagnósticos del siguiente texto separándolos por , y sin añadir interpretaciones: "+text,
             "stream": False
         }
         response = requests.post(url, json=data)
