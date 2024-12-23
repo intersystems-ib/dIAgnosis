@@ -53,8 +53,11 @@ export class AnalyzerComponent {
     var textHTML = this.textToAnalyze?.value;
     var textOriginal = textHTML;
     var textToProcess = this.textToAnalyze?.value.split(".").filter(Boolean);
-    var piecedTextToProcess: any[] = [textOriginal];
+    var piecedTextToProcess: any[] = [];
     
+    for (var index in textToProcess){
+      piecedTextToProcess = piecedTextToProcess.concat(textToProcess[index].split(","))
+    }
     var forReading = 100/(piecedTextToProcess.length);
     this.totalReceived = 0;
     this.error = false;
