@@ -1,7 +1,7 @@
 Class ENCODER.Object.TextMatches Extends (%Persistent, %JSON.Adaptor)
 {
 
-Property RawText As %String;
+Property RawText As %String(MAXLEN = 256);
 
 Property CodeId As %String;
 
