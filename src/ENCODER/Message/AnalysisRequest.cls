@@ -7,6 +7,8 @@ Property AnalysisId As %String;
 
 Property LanguageSelected As %String;
 
+Property UseLLM As %Boolean;
+
 Storage Default
 {
 <Data name="AnalysisRequestDefaultData">
@@ -19,6 +21,9 @@ Storage Default
 </Value>
 <Value name="3">
 <Value>LanguageSelected</Value>
+</Value>
+<Value name="4">
+<Value>UseLLM</Value>
 </Value>
 </Data>
 <DefaultData>AnalysisRequestDefaultData</DefaultData>

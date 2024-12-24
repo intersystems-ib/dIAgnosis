@@ -41,30 +41,43 @@ export class AnalyzerComponent {
   }
 
   public textForm = new UntypedFormGroup({
-    TextToAnalyze: new UntypedFormControl('', {nonNullable: true, validators: [Validators.required]})
+    TextToAnalyze: new UntypedFormControl('', {nonNullable: true, validators: [Validators.required]}),
+    UseLLM: new UntypedFormControl('', {nonNullable: false, validators: [Validators.required]})
   })
 
   get textToAnalyze() {
     return this.textForm.get('TextToAnalyze');
   }
 
+  get useLLM() {
+    return this.textForm.get('UseLLM');
+  }
+
   onSubmit() {
     this.diagnostics = [];
     var textHTML = this.textToAnalyze?.value;
     var textOriginal = textHTML;
-    var textToProcess = this.textToAnalyze?.value.split(".").filter(Boolean);
+    var llmEnabled = this.useLLM?.value;
+    var textToProcess = [];
     var piecedTextToProcess: any[] = [];
-    
-    for (var index in textToProcess){
-      piecedTextToProcess = piecedTextToProcess.concat(textToProcess[index].split(","))
+
+    if (llmEnabled) {
+      piecedTextToProcess = [textOriginal]
     }
+    else {
+      textToProcess = this.textToAnalyze?.value.split(".").filter(Boolean);
+      for (var index in textToProcess){
+        piecedTextToProcess = piecedTextToProcess.concat(textToProcess[index].split(","))
+      }
+    }
+    
     var forReading = 100/(piecedTextToProcess.length);
     this.totalReceived = 0;
     this.error = false;
     this.loading = true;
     this.textAndDiagnosticList = [];
     const rawText = {
-      "Text": textOriginal
+      "Text": textOriginal,
     };
     this.irisService.saveRawText(rawText).subscribe({next: raw => {
       this.totalReceived = 0;
@@ -74,7 +87,8 @@ export class AnalyzerComponent {
           const textData = {
             "ID": raw.id,
             "Text": piecedTextToProcess[index],
-            "Language": this.translocoService.getActiveLang()
+            "Language": this.translocoService.getActiveLang(),
+            "UseLLM": llmEnabled
           };
           this.irisService.analyzeText(textData).subscribe({next: resp =>{
             this.totalReceived += forReading;

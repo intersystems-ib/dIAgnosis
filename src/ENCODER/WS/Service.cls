@@ -152,6 +152,7 @@ ClassMethod AnalyzeText() As %Status
         set analysisRequest.TextToAnalyze = dynamicBody.%Get("Text")
         set analysisRequest.AnalysisId = dynamicBody.%Get("ID")
         set analysisRequest.LanguageSelected = dynamicBody.%Get("Language")
+        set analysisRequest.UseLLM = dynamicBody.%Get("UseLLM")
         
         // Creation of BS instance
         set status = ##class(Ens.Director).CreateBusinessService("ENCODER.BS.AnalyzeTextService", .instance)

@@ -38,5 +38,6 @@
     "IMPORTED-RECORDS": "Imported records",
     "VECTORIZED-RECORDS": "Vectorized records",
     "SIMILARITIES": "Similarities found for",
-    "MATCHES": "Matches"
+    "MATCHES": "Matches",
+    "USE-LLM": "Use LLM for diagnosis recognition"
 }

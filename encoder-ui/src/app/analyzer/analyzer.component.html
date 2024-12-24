@@ -4,7 +4,9 @@
             <form class="p-4" (ngSubmit)="onSubmit()" [formGroup]="textForm">
                 <div class="form-group">
                     <label for="textToAnalyze" class="font-weight-bold">{{'TEXT-ANALYZE' | transloco}}:</label>
-                    <textarea class="form-control" formControlName="TextToAnalyze" rows="8"></textarea>
+                    <textarea class="form-control" formControlName="TextToAnalyze" rows="8" name="textToAnalyze"></textarea>
+                    <label for="useLLM" class="font-weight-bold form-check-label">{{'USE-LLM' | transloco}}: </label>
+                    <input type="checkbox" class="btn btn-primary" class="form-check-input checkbox-form" name="useLLM" formControlName="UseLLM" value="true">
                 </div>
                 <div class="form-group pt-4 text-center">
                     <button type="submit" class="btn btn-primary" [ngClass]="{'disabled': loading}">

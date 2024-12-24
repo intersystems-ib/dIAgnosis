@@ -38,5 +38,6 @@
     "IMPORTED-RECORDS": "Registros importados",
     "VECTORIZED-RECORDS": "Registros vectorizados",
     "SIMILARITIES": "Similitudes encontradas para",
-    "MATCHES": "Coincidencias"
+    "MATCHES": "Coincidencias",
+    "USE-LLM": "Usar LLM para el reconocimiento de diagnósticos"
 }
