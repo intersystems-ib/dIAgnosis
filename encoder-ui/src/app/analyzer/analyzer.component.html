@@ -1,7 +1,7 @@
 <div class="w-100 h-100 overflow-hidden">
     <div class="row">
         <div class="col">
-            <form class="p-4" (ngSubmit)="onSubmit()" [formGroup]="textForm">
+            <form class="p-4 pb-0" (ngSubmit)="onSubmit()" [formGroup]="textForm">
                 <div class="form-group">
                     <label for="textToAnalyze" class="font-weight-bold">{{'TEXT-ANALYZE' | transloco}}:</label>
                     <textarea class="form-control" formControlName="TextToAnalyze" rows="8" name="textToAnalyze"></textarea>
