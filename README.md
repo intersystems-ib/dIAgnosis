@@ -58,7 +58,7 @@ Developed on Angular provides an easy to use user interface sending REST calls t
 ```
 docker-compose up -d
 ```
-Automatically an IRIS instance will be deployed and a production will be configured and run available to import data to create the prediction model and train it.
+Automatically an IRIS instance will be deployed and a production will be configured and run.
 
 * Open the [Management Portal](http://localhost:52774/csp/sys/%25CSP.Portal.Home.zen?$NAMESPACE=ENCODER).
 * Login using the default `superuser`/ `SYS` account.
