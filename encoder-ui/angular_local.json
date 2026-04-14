@@ -71,6 +71,9 @@
               "buildTarget": "encoder-ui:build:development"
             }
           },
+          "options": {
+            "proxyConfig": "proxy.config.json"
+            },
           "defaultConfiguration": "development"
         },
         "extract-i18n": {
@@ -89,10 +92,8 @@
             "tsConfig": "tsconfig.spec.json",
             "inlineStyleLanguage": "scss",
             "assets": [
-              {
-                "glob": "**/*",
-                "input": "public"
-              }
+              "src/favicon.ico",
+              "src/assets"
             ],
             "styles": [
               "src/styles.scss"
