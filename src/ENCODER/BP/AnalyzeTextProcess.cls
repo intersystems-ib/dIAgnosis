@@ -24,7 +24,7 @@ Method AnalyzeText(text As %String, analysisId As %String, language As %String) 
     try:
         url = "http://ollama:11434/api/generate"
         data = {
-            "model": "llama3.2",
+            "model": "llama3.2:3b-instruct-q4_K_M",
             "prompt": "Extrae únicamente los diagnósticos del siguiente texto separándolos por , y sin añadir interpretaciones: "+text,
             "stream": False
         }
